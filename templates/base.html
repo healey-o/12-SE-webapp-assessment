@@ -2,91 +2,97 @@
 <html>
     <head> 
         <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
-        
-        <title>{% block title %}Hi{% endblock %}</title>
+    
+        <title>{% block title %}{% endblock %}</title>
     </head>
     
     <body>
-        
+        <header>
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
 
-        
-        <nav class="navbar" role="navigation" aria-label="main navigation">
-            <div class="navbar-brand">
-                <svg width="60" height="60" viewBox="-40 -40 80 80">
-                    <circle fill="white" r="8"/>
-                    <circle fill="transparent" stroke="white" r="15"/>
-                    <circle fill="transparent" stroke="white" r="25"/>
-                    <circle fill="transparent" stroke="white" r="35"/>
-                    <g>
-                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="1s" repeatCount="indefinite"/>            
-                        <g transform="translate(0, 15)">
-                            <circle fill="" r="4"/>
+                    <!-- Custom SVG Logo that takes up most of the lines on this template -->
+                    <svg width="60" height="60" viewBox="-40 -40 80 80">
+                        <circle fill="var(--accent-color)" r="8" class="logo"/>
+                        <circle fill="transparent" stroke="var(--accent-color)" r="15" class="logo"/>
+                        <circle fill="transparent" stroke="var(--accent-color)" r="25" class="logo"/>
+                        <circle fill="transparent" stroke="var(--accent-color)" r="35" class="logo"/>
+                        <g>
+                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="1s" repeatCount="indefinite"/>            
+                            <g transform="translate(0, 15)">
+                                <circle fill="var(--accent-color)" r="4" class="logo"/>
+                            </g>
                         </g>
-                    </g>
-                    <g>
-                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite"/>            
-                        <g transform="translate(0, 25)">
-                            <circle fill="white" r="4"/>
+                        <g>
+                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite"/>            
+                            <g transform="translate(0, 25)">
+                                <circle fill="var(--accent-color)" r="4" class="logo"/>
+                            </g>
                         </g>
-                    </g>
-                    <g>
-                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="3s" repeatCount="indefinite"/>            
-                        <g transform="translate(0, 35)">
-                            <circle fill="white" r="4"/>
+                        <g>
+                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="3s" repeatCount="indefinite"/>            
+                            <g transform="translate(0, 35)">
+                                <circle fill="var(--accent-color)" r="4" class="logo"/>
+                            </g>
                         </g>
-                    </g>
-                </svg>
-            </div>
-          
-            <div class="navbar-menu">
-                <div class="navbar-start">
-                    <a class="navbar-item" href="/">
-                        Home
-                    </a>
-          
-                    <a class="navbar-item" href="">
-                        Page 1
-                    </a>
-          
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link">
-                            Page 2
+                    </svg>
+                </div>
+            
+                <div class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="/">
+                            Home
                         </a>
             
-                        <div class="navbar-dropdown">
-                            <a class="navbar-item">
-                                Page 2.1
+                        <a class="navbar-item" href="">
+                            Page 1
+                        </a>
+            
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            <a class="navbar-link">
+                                Page 2
                             </a>
-                            <a class="navbar-item">
-                                Page 2.2
-                            </a>
-                            <a class="navbar-item">
-                                Page 2.3
-                            </a>
-                            <hr class="navbar-divider">
-                            <a class="navbar-item">
-                                Page 2.4
-                            </a>
+                
+                            <div class="navbar-dropdown">
+                                <a class="navbar-item">
+                                    Page 2.1
+                                </a>
+                                <a class="navbar-item">
+                                    Page 2.2
+                                </a>
+                                <a class="navbar-item">
+                                    Page 2.3
+                                </a>
+                                <hr class="navbar-divider">
+                                <a class="navbar-item">
+                                    Page 2.4
+                                </a>
+                            </div>
                         </div>
                     </div>
+            
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-primary" href="/signup">
+                        <strong>Sign Up</strong>
+                        </a>
+                        <a class="button is-light" href="/login">
+                            Log in
+                        </a>
+                    </div>
+                    </div>
                 </div>
-          
-              <div class="navbar-end">
-                <div class="navbar-item">
-                  <div class="buttons">
-                    <a class="button is-primary" href="">
-                      <strong>Sign Up</strong>
-                    </a>
-                    <a class="button is-light">
-                        Log in
-                    </a>
-                  </div>
                 </div>
-              </div>
-            </div>
-        </nav>
+            </nav>
+        </header>
 
-        <h1 class="title">{% block heading %}Hi{% endblock %}</h1>
+        <section class="hero">
+            <div class="hero-body">
+                <h1 class="title has-text-centered">
+                    {% block heading %}{% endblock %}
+                </h1>
+        </section>
 
         <div class='content'>
             {% block content %}{% endblock %}

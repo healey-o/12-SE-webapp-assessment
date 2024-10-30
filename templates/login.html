@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Study Planner: Log In{% endblock %}
+
+{% block heading %}Log In{% endblock %}
+
+{% block content %}
+    <div class="columns is-centered">
+        <form action="/login" method="post" class="box column is-half" id="login-form">
+            <div class="field">
+                <label for="username" class="label">Username</label>
+                <input id="username" class="input" type="text" placeholder="e.g. JohnSmith123" />
+            </div>
+
+            <br>
+            
+            <div class="field">
+                <label for="password" class="label">Password</label>
+                <input id="password" class="input" type="password" placeholder="********" />
+            </div>
+            
+            <br>
+
+            <input type="submit" value="Log In" class="button is-primary">
+            </div>
+        </form>
+
+        <section class="column">
+            <p class="has-text-centered">Don't have an account? <a href="/signup">Sign up here!</a></p>
+        </section>
+    </div>
+{% endblock %}
