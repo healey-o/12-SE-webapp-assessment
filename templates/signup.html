@@ -6,32 +6,43 @@
 
 {% block content %}
     <div class="columns is-centered">
-        <form action="/signup" method="post" class="box column is-half" id="signup-form">
+        <form action="/signup" method="POST" class="box column is-half" id="signup-form">
             <div class="field">
-                <label for="username" class="label">Username</label>
-                <input id="username" class="input" type="text" placeholder="e.g. JohnSmith123" />
+                <label for="username-signup" class="label">Username</label>
+                <input id="username-signup" class="input" type="text" name="username-signup" placeholder="e.g. JohnSmith123" />
             </div>
+            {% if "username_taken" in errors %}
+                <p class="help is-danger">Username is already taken.</p>
+            {% endif %}
 
             <br>
             
             <div class="field">
-                <label for="password" class="label">Password</label>
-                <input id="password" class="input" type="password" placeholder="********" />
+                <label for="password-signup" class="label">Password</label>
+                <input id="password-signup" class="input" type="password" name="password-signup" placeholder="********" />
             </div>
+            {% if "password_length" in errors %}
+                <p class="help is-danger">Password must be at least 8 characters long.</p>
+            {% endif %}
 
             <div class="field">
-                <label for="password" class="label">Confirm Password</label>
-                <input id="password" class="input" type="password" placeholder="********" />
+                <label for="password_confirm" class="label">Confirm Password</label>
+                <input id="password-confirm" class="input" type="password" name="password-confirm" placeholder="********" />
             </div>
+
+            {% if "match_password" in errors %}
+                <p class="help is-danger">Passwords do not match.</p>
+            {% endif %}
             
             <br>
+            {% if "empty_field" in errors %}
+                <p class="help is-danger">Please fill in all fields.</p>
+                <br>
+            {% endif %}
 
+            
             <input type="submit" value="Sign Up" class="button is-primary">
-            </div>
         </form>
-
-        <section class="column">
-            <p class="has-text-centered">Already have an account? <a href="/login">Log in here!</a></p>
-        </section>
     </div>
+    <p class="has-text-centered ">Already have an account? <a href="/login">Log in here!</a></p>
 {% endblock %}

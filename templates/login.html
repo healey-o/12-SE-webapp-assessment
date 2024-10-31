@@ -6,27 +6,33 @@
 
 {% block content %}
     <div class="columns is-centered">
-        <form action="/login" method="post" class="box column is-half" id="login-form">
+        <form action="/login" method="POST" class="box column is-half" id="login-form">
             <div class="field">
-                <label for="username" class="label">Username</label>
-                <input id="username" class="input" type="text" placeholder="e.g. JohnSmith123" />
+                <label for="username-login" class="label">Username</label>
+                <input id="username-login" class="input" type="text" name="username-login" placeholder="e.g. JohnSmith123" />
             </div>
 
             <br>
             
             <div class="field">
-                <label for="password" class="label">Password</label>
-                <input id="password" class="input" type="password" placeholder="********" />
+                <label for="password-login" class="label">Password</label>
+                <input id="password-login" class="input" type="password" name="password-login" placeholder="********" />
             </div>
             
             <br>
 
             <input type="submit" value="Log In" class="button is-primary">
-            </div>
-        </form>
 
-        <section class="column">
-            <p class="has-text-centered">Don't have an account? <a href="/signup">Sign up here!</a></p>
-        </section>
+            {% if failed_attempt %}
+                <div class="has-text-centered has-text-danger">
+                    <p>Invalid login details.</p>
+                </div>
+            {% endif %}
+        </form>
+        
     </div>
+
+    
+
+    <p class="has-text-centered">Don't have an account? <a href="/signup">Sign up here!</a></p>
 {% endblock %}
