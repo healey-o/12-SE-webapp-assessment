@@ -5,5 +5,33 @@
 {% block heading %}Dashboard{% endblock %}
 
 {% block content %}
-    <p>Welcome to the dashboard!</p>
+    <p class="has-text-centered">Welcome to the dashboard!</p>
+    <p class="has-text-centered">Here you can view your study plan, add new tasks, and mark tasks as complete.</p>
+    <h3>Study Plan</h3>
+    <div class="columns is-multiline">
+        {% if tasks|length > 0 %}
+            {% for task in tasks %}
+            <div class="column is-one-third">
+                <div class="box">
+                <article class="media">
+                    <div class="media-content">
+                    <div class="content">
+                        <p>
+                        <strong>Task:</strong> {{ task.task }}<br>
+                        <strong>Due Date:</strong> {{ task.due_date }}<br>
+                        </p>
+                    </div>
+                    <form action="/complete" method="POST">
+                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                        <input type="submit" value="Complete" class="button is-primary">
+                    </form>
+                    </div>
+                </article>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="has-text-centered">You have no current tasks. Click 'Add Task' to create a new one.</p>
+        {% endif %}
+    </div>
 {% endblock %}

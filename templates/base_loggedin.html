@@ -2,6 +2,7 @@
 <html>
     <head> 
         <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
+        {% block head %}{% endblock %}
     
         <title>{% block title %}{% endblock %}</title>
     </head>
@@ -45,11 +46,11 @@
                         </a>
             
                         <a class="navbar-item" href="">
-                            Page 1
+                            Your Day
                         </a>
             
-                        <a class="navbar-item">
-                            Page 2
+                        <a class="navbar-item" href="/addtask">
+                            Add Task
                         </a>
                     </div>
             
