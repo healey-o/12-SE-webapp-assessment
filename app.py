@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, session
 from sqlalchemy import create_engine, text
 import uuid
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = '0f71536e0640da386f0537f1'
 
 engine = create_engine('sqlite:///userdata.db')
 connection = engine.connect()
@@ -82,6 +83,9 @@ def submitLogin():
     if len(result) == 0:
         return render_template("login.html",failed_attempt=True)
     else:
+        # Set the session variables
+        session['userId'] = result[0][0]
+        session['username'] = result[0][1]
         return redirect(url_for('dashboard'))
     
 
@@ -89,11 +93,31 @@ def submitLogin():
 #Main page after login
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    userId = session.get('userId')
+    if userId is None:
+        return redirect(url_for('login'))
+    else:
+        query = text("SELECT * FROM tasks WHERE user_id = '{}'".format(userId))
+        result = connection.execute(query).fetchall()
+
+        groups = ["None","Personal","School"]#Temporary groups for testing
+        for task in result:
+            if task[4] not in groups:
+                groups.append(task[4])
+
+        return render_template('dashboard.html', tasks=result, groups=groups)
+
+@app.route('/complete', methods=['POST'])
+def completeTask():
+    task_id = request.form['task_id']
+    query = text("UPDATE tasks SET completed = 1 WHERE task_id = '{}'".format(task_id))
+    connection.execute(query)
+    connection.commit()
+    return redirect(url_for('dashboard'))
 
 @app.route('/addtask', methods=['GET'])
 def addtask():
-    return render_template('add_task.html',groups=["None","Important","Personal"])#Temporary groups for testing
+    return render_template('add_task.html',groups=["None","Personal","School"])#Temporary groups for testing
 
 @app.route('/addtask', methods=['POST'])
 def submitTask():
@@ -121,7 +145,7 @@ def submitTask():
     else:
         important = 0
     
-    userId = '1'#Temporary user id for testing
+    userId = session.get('userId')
 
 
     # Check for errors in the form data
@@ -132,9 +156,9 @@ def submitTask():
         return render_template('add_task.html', errors=errors,groups=["None","Important","Personal"])
     else:
         insert_statement = '''
-INSERT INTO tasks (user_id, name, details, group_name, important, due_date, completed)
-VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')
-'''.format(userId, task, details, group, important, due_date, 0)
+INSERT INTO tasks (user_id, task_id, name, details, group_name, important, due_date, completed)
+VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')
+'''.format(userId, str(uuid.uuid4()), task, details, group, important, due_date, 0)
 
         connection.execute(text(insert_statement))
         connection.commit()

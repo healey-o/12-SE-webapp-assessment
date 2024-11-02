@@ -7,31 +7,59 @@
 {% block content %}
     <p class="has-text-centered">Welcome to the dashboard!</p>
     <p class="has-text-centered">Here you can view your study plan, add new tasks, and mark tasks as complete.</p>
-    <h3>Study Plan</h3>
+    <hr>
     <div class="columns is-multiline">
-        {% if tasks|length > 0 %}
-            {% for task in tasks %}
-            <div class="column is-one-third">
-                <div class="box">
-                <article class="media">
-                    <div class="media-content">
-                    <div class="content">
-                        <p>
-                        <strong>Task:</strong> {{ task.task }}<br>
-                        <strong>Due Date:</strong> {{ task.due_date }}<br>
-                        </p>
+        {% for group in groups %}
+            <div class="circle-holder column is-full is-centered">
+                <div class="group-circle">
+                    <div class="hero-body">
+                        <p class="title is-4">{{ group }}</p>
                     </div>
-                    <form action="/complete" method="POST">
-                        <input type="hidden" name="task_id" value="{{ task.id }}">
-                        <input type="submit" value="Complete" class="button is-primary">
-                    </form>
-                    </div>
-                </article>
                 </div>
             </div>
+            {% set has_tasks = tasks | selectattr('4', 'equalto', group) | list | length > 0 %}
+            {% for task in tasks %}
+                {% if task[4] == group %}
+                    <div class="column is-one-third">
+                        <div class="box">
+                            <article class="media">
+                                <div class="media-content">
+                                    <div class="content">
+                                        <p>
+                                            <strong>Task:</strong> {{ task[2] }}<br>
+                                            {% if task[3] != "" %}
+                                                <strong>Description:</strong> {{ task[3] }}<br>
+                                            {% endif %}
+                                            
+                                            {% if task[7] == 0 %}
+                                                <strong>Due Date:</strong> {{ task[6] }}<br>
+                                                {% if task[5] %}
+                                                    <strong class="has-text-danger">Important</strong><br>
+                                                {% endif %}
+                                            {% else %}
+                                                <strong class="has-text-success">Task Complete</strong>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    {% if task[7] == 0 %}
+                                        <form action="/complete" method="POST">
+                                            <input type="hidden" name="task_id" value="{{ task[1] }}">
+                                            <input type="submit" value="Complete" class="button is-primary">
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                {% endif %}
             {% endfor %}
-        {% else %}
-            <p class="has-text-centered">You have no current tasks. Click 'Add Task' to create a new one.</p>
-        {% endif %}
+            {% if not has_tasks %}
+                <div class="column is-full">
+                    <div class="box">
+                        <p class="has-text-centered">No tasks in this group.</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
 {% endblock %}

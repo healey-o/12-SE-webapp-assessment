@@ -13,7 +13,7 @@
                 <div class="navbar-brand">
 
                     <!-- Custom SVG Logo that takes up most of the lines on this template -->
-                    <svg width="60" height="60" viewBox="-40 -40 80 80">
+                    <svg id="logo-svg" width="60" height="60" viewBox="-40 -40 80 80">
                         <circle fill="var(--accent-color)" r="8" class="logo"/>
                         <circle fill="transparent" stroke="var(--accent-color)" r="15" class="logo"/>
                         <circle fill="transparent" stroke="var(--accent-color)" r="25" class="logo"/>
@@ -40,30 +40,36 @@
                 </div>
             
                 <div class="navbar-menu">
-                    <div class="navbar-start">
-                        <a class="navbar-item" href="/dashboard">
-                            Dashboard
-                        </a>
-            
-                        <a class="navbar-item" href="">
-                            Your Day
-                        </a>
-            
-                        <a class="navbar-item" href="/addtask">
-                            Add Task
-                        </a>
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <div class="navbar-start">
+                                <a class="button is-primary" href="/dashboard">
+                                    Dashboard
+                                </a>
+
+
+                    
+                                <a class="button" href="">
+                                    My Day
+                                </a>
+                    
+                                <a class="button is-info" href="/addtask">
+                                    Add Task
+                                </a>
+                            </div>
+                        </div>
                     </div>
             
                 <div class="navbar-end">
                     <div class="navbar-item">
-                    <div class="buttons">
-                        <a class="navbar-item" href="">
-                        <strong>Username</strong>
-                        </a>
-                        <a class="navbar-item" href="/">
-                            Log out
-                        </a>
-                    </div>
+                        <div class="buttons">
+                            <a class="button is-link" href="">
+                            <strong>{{ session['username'] }}</strong>
+                            </a>
+                            <a class="button" href="/">
+                                Log out
+                            </a>
+                        </div>
                     </div>
                 </div>
                 </div>

@@ -6,7 +6,7 @@
     /* Bulma color scheme edits */
     --bulma-primary-h: 206deg;
     --bulma-primary-l: 61%;
-    --bulma-link-l: 53%;
+    --bulma-link-l: 20%;
     --bulma-info-h: 63deg;
     --bulma-info-l: 68%;
     --bulma-scheme-s: 36%;
@@ -33,7 +33,75 @@ header {
     overflow: hidden;
 }
 
+#logo-svg {
+    padding-right: 10px;
+}
+
 #login-form, #signup-form {
     height: 100%;
     padding: 30px;
+}
+
+.hero-body {
+    padding: 20px;
+}
+
+.hero {
+    margin-left: 20px;
+    margin-right: 20px;
+    border-radius: 20px;
+}
+
+.circle-holder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.group-circle {
+    position: relative;
+    margin: .5em;
+    border-radius: 50%;
+    width: 200px;
+    text-align: center;
+    align-content: center;
+    overflow: hidden;
+    height: 200px;
+    background-color: var(--bulma-link);
+}
+
+.group-circle:hover {
+    animation: circle-hover 0.1s ease-in-out;
+    cursor: pointer;
+    background-color: var(--bulma-primary);
+    transform: scale(1.1);
+}
+
+@keyframes circle-hover {
+    0% {
+        transform: scale(1);
+        background-color: var(--bulma-link);
+
+    }
+    100% {
+        transform: scale(1.1);
+        background-color: var(--bulma-primary);
+    }
+}
+
+.group-circle:active {
+    animation: circle-active 0.1s ease-in-out;
+    background-color: var(--bulma-link);
+    transform: scale(1);
+}
+
+@keyframes circle-active {
+    0% {
+        transform: scale(1.1);
+        background-color: var(--bulma-primary);
+    }
+    100% {
+        transform: scale(1);
+        background-color: var(--bulma-link);
+    }
 }
