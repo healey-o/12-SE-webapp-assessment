@@ -52,11 +52,23 @@ def submitSignup():
         unique_id = str(uuid.uuid4())#gives each user a unique id
         insert_statement = '''
     INSERT INTO userdetails (id, username, password)
-    VALUES ('{}', '{}', '{}')
-    '''.format(unique_id, username, password)
+    VALUES ('{}', '{}', '{}');
+    '''.format(unique_id, username, password, unique_id, unique_id)
     
         connection.execute(text(insert_statement))
         connection.commit()
+
+        insert_statement = '''
+    INSERT INTO groups (user_id, group_name)
+    VALUES 
+    ('{}', 'Personal'),
+    ('{}', 'School');
+    '''.format(unique_id, unique_id)
+        
+        connection.execute(text(insert_statement))
+        connection.commit()
+
+        
 
         return redirect(url_for('dashboard'))
         
@@ -100,7 +112,11 @@ def dashboard():
         query = text("SELECT * FROM tasks WHERE user_id = '{}'".format(userId))
         result = connection.execute(query).fetchall()
 
-        groups = ["None","Personal","School"]#Temporary groups for testing
+        print(userId)
+        groups_query = text("SELECT group_name FROM groups WHERE user_id = '{}'".format(userId))
+        groups = [group[0] for group in connection.execute(groups_query).fetchall()]
+        print(groups)
+
         for task in result:
             if task[4] not in groups:
                 groups.append(task[4])
@@ -112,12 +128,14 @@ def completeTask():
     task_id = request.form['task_id']
     query = text("UPDATE tasks SET completed = 1 WHERE task_id = '{}'".format(task_id))
     connection.execute(query)
-    connection.commit()
     return redirect(url_for('dashboard'))
 
 @app.route('/addtask', methods=['GET'])
 def addtask():
-    return render_template('add_task.html',groups=["None","Personal","School"])#Temporary groups for testing
+    groups_query = text("SELECT group_name FROM groups WHERE user_id = '{}'".format(session.get('userId')))
+    groups = [group[0] for group in connection.execute(groups_query).fetchall()]
+
+    return render_template('add_task.html',groups=groups)
 
 @app.route('/addtask', methods=['POST'])
 def submitTask():
@@ -134,11 +152,9 @@ def submitTask():
 
     details = request.form['description']
 
-    due_date_str = request.form['due-date']
-    if due_date_str == '':
+    due_date = request.form['due-date']
+    if due_date == '':
         errors.append('empty_field')
-    else:
-        due_date = datetime.strptime(due_date_str, '%Y-%m-%d').strftime('%Y-%m-%d')
 
     if request.form.get('important') == 'on':
         important = 1
@@ -147,18 +163,28 @@ def submitTask():
     
     userId = session.get('userId')
 
+    groups_query = text("SELECT group_name FROM groups WHERE user_id = '{}'".format(userId))
+    groups = [group[0] for group in connection.execute(groups_query).fetchall()]
+
+    if group not in groups:
+        insert_statement = '''
+    INSERT INTO groups (user_id, group_name)
+    VALUES ('{}', '{}')
+    '''.format(userId, group)
+        connection.execute(text(insert_statement))
+        connection.commit()
 
     # Check for errors in the form data
     if task == '':
         errors.append('empty_field')
     
     if len(errors) > 0:
-        return render_template('add_task.html', errors=errors,groups=["None","Important","Personal"])
+        return render_template('add_task.html', errors=errors,groups=groups)
     else:
         insert_statement = '''
-INSERT INTO tasks (user_id, task_id, name, details, group_name, important, due_date, completed)
-VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')
-'''.format(userId, str(uuid.uuid4()), task, details, group, important, due_date, 0)
+    INSERT INTO tasks (user_id, task_id, name, details, group_name, important, due_date, completed)
+    VALUES ('{}', '{}', '{}', '{}', '{}', {}, '{}', 0)
+    '''.format(userId, str(uuid.uuid4()), task, details, group, important, due_date)
 
         connection.execute(text(insert_statement))
         connection.commit()
