@@ -23,7 +23,7 @@
                 <div class="select">
                     <select id="group-select" name="group-select" onchange="detectNewGroup()">
                         {% for group in groups %}
-                            <option value="{{ group }}">{{ group }}</option>
+                            <option value="{{ group }}">{{ group.group_name }}</option>
                         {% endfor %}
                         <option value="new">New group...</option>
                     </select>

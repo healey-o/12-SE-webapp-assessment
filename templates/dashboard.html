@@ -12,27 +12,27 @@
             <div class="circle-holder column is-full is-centered">
                 <div class="group-circle">
                     <div class="hero-body">
-                        <p class="group-circle-title title is-4">{{ group }}</p>
+                        <p class="group-circle-title title is-4">{{ group.group_name }}</p>
                     </div>
                 </div>
             </div>
             {% set has_tasks = tasks | selectattr('4', 'equalto', group) | list | length > 0 %}
             {% for task in tasks %}
-                {% if task[4] == group %}
+                {% if task.group_id == group.group_id %}
                     <div class="column is-one-third">
                         <div class="box">
                             <article class="media">
                                 <div class="media-content">
                                     <div class="content">
                                         <p>
-                                            <strong>Task:</strong> {{ task[2] }}<br>
+                                            <strong>Task:</strong> {{ task.task_id }}<br>
                                             {% if task[3] != "" %}
-                                                <strong>Description:</strong> {{ task[3] }}<br>
+                                                <strong>Description:</strong> {{ task.details }}<br>
                                             {% endif %}
                                             
-                                            {% if task[7] == 0 %}
-                                                <strong>Due Date:</strong> {{ task[6] }}<br>
-                                                {% if task[5] %}
+                                            {% if not task.completed %}
+                                                <strong>Due Date:</strong> {{ task.due_date }}<br>
+                                                {% if task.important %}
                                                     <strong class="has-text-danger">Important</strong><br>
                                                 {% endif %}
                                             {% else %}
@@ -40,7 +40,7 @@
                                             {% endif %}
                                         </p>
                                     </div>
-                                    {% if task[7] == 0 %}
+                                    {% if not task.completed %}
                                         <form action="/complete" method="POST">
                                             <input type="hidden" name="task_id" value="{{ task[1] }}">
                                             <input type="submit" value="Complete" class="button is-primary">
@@ -53,8 +53,8 @@
                 {% endif %}
             {% endfor %}
             {% if not has_tasks %}
-                <div class="column is-full">
-                    <div class="box">
+                <div class="column is-4 is-offset-4">
+                    <div class="task-circle">
                         <p class="has-text-centered">No tasks in this group.</p>
                     </div>
                 </div>

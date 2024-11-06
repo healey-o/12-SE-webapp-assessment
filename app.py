@@ -1,13 +1,21 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from sqlalchemy import create_engine, text
+from flask import Flask, render_template, request, redirect, url_for
+from flask import session as flask_session
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from werkzeug.security import generate_password_hash
 import uuid
-from datetime import datetime
+from setup_db import User, Task, Group
+import datetime
 
 app = Flask(__name__)
 app.secret_key = '0f71536e0640da386f0537f1'
 
 engine = create_engine('sqlite:///userdata.db')
-connection = engine.connect()
+Session = sessionmaker(bind=engine)
+session = Session()
+# There are two types of sessions in this project: 
+# flask_session from flask (renamed to avoid conflict) and session from sqlalchemy
+# flask_session is used to store the user's session data, while session from sqlalchemy is used to interact with the database
 
 #Welcome page when not signed in
 @app.route('/')
@@ -38,10 +46,10 @@ def submitSignup():
     
     if password != password_confirm:
         errors.append('match_password')
-    
-    query = text("SELECT * FROM userdetails WHERE username = '{}'".format(username))
-    result = connection.execute(query).fetchall()
-    if len(result) > 0:
+
+
+    users = session.query(User).filter(User.username == username).all()
+    if len(users) > 0:
         errors.append('username_taken')
 
     
@@ -49,27 +57,19 @@ def submitSignup():
     if len(errors) > 0:
         return render_template('signup.html', errors=errors)
     else:
-        unique_id = str(uuid.uuid4())#gives each user a unique id
-        insert_statement = '''
-    INSERT INTO userdetails (id, username, password)
-    VALUES ('{}', '{}', '{}');
-    '''.format(unique_id, username, password, unique_id, unique_id)
-    
-        connection.execute(text(insert_statement))
-        connection.commit()
+        unique_id = str(uuid.uuid4())#gives each user a unique uuid
 
-        insert_statement = '''
-    INSERT INTO groups (user_id, group_name)
-    VALUES 
-    ('{}', 'Personal'),
-    ('{}', 'School');
-    '''.format(unique_id, unique_id)
-        
-        connection.execute(text(insert_statement))
-        connection.commit()
+        user = User(id=unique_id, username=username, password=generate_password_hash(password))
+        session.add(user)
+
+        # Default groups for each user
+        session.add(Group(user_id=unique_id, group_name='Personal', group_id=str(uuid.uuid4())))
+        session.add(Group(user_id=unique_id, group_name='School', group_id=str(uuid.uuid4())))
+        session.commit()
 
         
-
+        flask_session['userId'] = user.id
+        flask_session['username'] = user.username
         return redirect(url_for('dashboard'))
         
         
@@ -90,50 +90,45 @@ def submitLogin():
         return render_template("login.html",failed_attempt=True)
 
     # Check if the user exists
-    query = text("SELECT * FROM userdetails WHERE username = '{}' and password = '{}'".format(username, password))
-    result = connection.execute(query).fetchall()
-    if len(result) == 0:
-        return render_template("login.html",failed_attempt=True)
-    else:
+    user = session.query(User).filter(User.username == username).first()
+    if user and user.check_password(password):
         # Set the session variables
-        session['userId'] = result[0][0]
-        session['username'] = result[0][1]
+        flask_session['userId'] = user.id
+        flask_session['username'] = user.username
         return redirect(url_for('dashboard'))
+    else:
+        return render_template("login.html",failed_attempt=True)
+        
     
 
 
 #Main page after login
 @app.route('/dashboard')
 def dashboard():
-    userId = session.get('userId')
+    userId = flask_session.get('userId')
     if userId is None:
         return redirect(url_for('login'))
     else:
-        query = text("SELECT * FROM tasks WHERE user_id = '{}'".format(userId))
-        result = connection.execute(query).fetchall()
+        tasks = session.query(Task).filter(Task.user_id == userId).all()
 
-        print(userId)
-        groups_query = text("SELECT group_name FROM groups WHERE user_id = '{}'".format(userId))
-        groups = [group[0] for group in connection.execute(groups_query).fetchall()]
-        print(groups)
+        groups = session.query(Group).filter(Group.user_id == userId).all()
 
-        for task in result:
-            if task[4] not in groups:
-                groups.append(task[4])
-
-        return render_template('dashboard.html', tasks=result, groups=groups)
+        return render_template('dashboard.html', tasks=tasks, groups=groups)
 
 @app.route('/complete', methods=['POST'])
 def completeTask():
     task_id = request.form['task_id']
-    query = text("UPDATE tasks SET completed = 1 WHERE task_id = '{}'".format(task_id))
-    connection.execute(query)
+    task = session.query(Task).filter(Task.task_id == task_id).first()
+    if task:
+        task.completed = True
+        session.commit()
+    session.update(Task).where(Task.task_id == task_id).values(completed=1)
+
     return redirect(url_for('dashboard'))
 
 @app.route('/addtask', methods=['GET'])
 def addtask():
-    groups_query = text("SELECT group_name FROM groups WHERE user_id = '{}'".format(session.get('userId')))
-    groups = [group[0] for group in connection.execute(groups_query).fetchall()]
+    groups = session.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
 
     return render_template('add_task.html',groups=groups)
 
@@ -155,24 +150,20 @@ def submitTask():
     due_date = request.form['due-date']
     if due_date == '':
         errors.append('empty_field')
+    due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d')
 
     if request.form.get('important') == 'on':
-        important = 1
+        important = True
     else:
-        important = 0
+        important = False
     
-    userId = session.get('userId')
+    userId = flask_session.get('userId')
 
-    groups_query = text("SELECT group_name FROM groups WHERE user_id = '{}'".format(userId))
-    groups = [group[0] for group in connection.execute(groups_query).fetchall()]
+    groups = session.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
 
     if group not in groups:
-        insert_statement = '''
-    INSERT INTO groups (user_id, group_name)
-    VALUES ('{}', '{}')
-    '''.format(userId, group)
-        connection.execute(text(insert_statement))
-        connection.commit()
+        add_group = Group(user_id=userId, group_name=group, group_id=str(uuid.uuid4()))
+        session.add(add_group)
 
     # Check for errors in the form data
     if task == '':
@@ -181,13 +172,10 @@ def submitTask():
     if len(errors) > 0:
         return render_template('add_task.html', errors=errors,groups=groups)
     else:
-        insert_statement = '''
-    INSERT INTO tasks (user_id, task_id, name, details, group_name, important, due_date, completed)
-    VALUES ('{}', '{}', '{}', '{}', '{}', {}, '{}', 0)
-    '''.format(userId, str(uuid.uuid4()), task, details, group, important, due_date)
+        group_id = session.query(Group).filter(Group.group_name == group).first().group_id
 
-        connection.execute(text(insert_statement))
-        connection.commit()
+        task = Task(user_id=userId, task_id=str(uuid.uuid4()), name=task, details=details, group_id=group_id, important=important, due_date=due_date, completed=False)
+        session.add(task)
 
         return redirect(url_for('dashboard'))
 

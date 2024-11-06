@@ -114,3 +114,17 @@ header {
 .group-circle-title {
     color: #d8d9ff;
 }
+
+.task-circle {
+    position: relative;
+    margin: .5em;
+    border-radius: 50%;
+    width: 170px;
+    text-align: center;
+    align-content: center;
+    justify-self: center;
+    overflow: hidden;
+    height: 170px;
+    background-color: var(--bulma-info);
+    color:#0f141f;
+}
