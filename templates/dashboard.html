@@ -16,24 +16,21 @@
                     </div>
                 </div>
             </div>
-            {% set has_tasks = tasks | selectattr('4', 'equalto', group) | list | length > 0 %}
+            {% set has_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list | length > 0 %}
             {% for task in tasks %}
                 {% if task.group_id == group.group_id %}
                     <div class="column is-one-third">
-                        <div class="box">
+                        <div class="task-circle">
                             <article class="media">
                                 <div class="media-content">
                                     <div class="content">
                                         <p>
-                                            <strong>Task:</strong> {{ task.task_id }}<br>
-                                            {% if task[3] != "" %}
-                                                <strong>Description:</strong> {{ task.details }}<br>
-                                            {% endif %}
+                                            <strong class="circle-header">Task:</strong> {{ task.name }}<br>
                                             
                                             {% if not task.completed %}
-                                                <strong>Due Date:</strong> {{ task.due_date }}<br>
+                                                <strong class="circle-header">Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
                                                 {% if task.important %}
-                                                    <strong class="has-text-danger">Important</strong><br>
+                                                    <strong class="has-text-danger circle-header">Important</strong><br>
                                                 {% endif %}
                                             {% else %}
                                                 <strong class="has-text-success">Task Complete</strong>

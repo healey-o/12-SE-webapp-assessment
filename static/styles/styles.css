@@ -64,6 +64,7 @@ header {
 }
 
 .group-circle {
+    animation: circle-leave 0.3s ease-in-out forwards;
     position: relative;
     margin: .5em;
     border-radius: 50%;
@@ -75,22 +76,45 @@ header {
     background-color: var(--bulma-link);
 }
 
-.group-circle:hover {
-    animation: circle-hover 0.1s ease-in-out;
-    cursor: pointer;
-    background-color: var(--bulma-primary);
-    transform: scale(1.1);
+/* Animation for when circle leaves hover */
+/* Animation runs when page loads as a side-affect of the way this runs, but I think that looks cool anyways */
+@keyframes circle-leave {
+    0% {
+        transform: scale(1.1);
+        background-color: var(--bulma-link-30);
+        border: var(--bulma-link) solid 7px;
+    }
+    100% {
+        transform: scale(1);
+        background-color: var(--bulma-link);
+        border: var(--bulma-link-30) solid 0px;
+    }
 }
 
+.group-circle:hover {
+    animation: circle-hover 0.4s ease-in-out;
+    cursor: pointer;
+    background-color: var(--bulma-link-30);
+    transform: scale(1.1);
+    border: var(--bulma-link) solid 7px;
+}
+
+/* Animation for when circle is hovered */
 @keyframes circle-hover {
     0% {
         transform: scale(1);
         background-color: var(--bulma-link);
+        border: var(--bulma-link-30) solid 0px;
 
+    }
+    90% {
+        transform: scale(1.12);
+        border: var(--bulma-link) solid 10px;
     }
     100% {
         transform: scale(1.1);
-        background-color: var(--bulma-primary);
+        background-color: var(--bulma-link-30);
+        border: var(--bulma-link) solid 7px;
     }
 }
 
@@ -100,10 +124,11 @@ header {
     transform: scale(1);
 }
 
+/* Animation for when circle is clicked */
 @keyframes circle-active {
     0% {
         transform: scale(1.1);
-        background-color: var(--bulma-primary);
+        background-color: var(--bulma-link-30);
     }
     100% {
         transform: scale(1);
@@ -118,13 +143,18 @@ header {
 .task-circle {
     position: relative;
     margin: .5em;
+    border: var(--bulma-info-dark) solid 7px;
     border-radius: 50%;
-    width: 170px;
+    width: 190px;
     text-align: center;
     align-content: center;
     justify-self: center;
     overflow: hidden;
-    height: 170px;
+    height: 190px;
     background-color: var(--bulma-info);
     color:#0f141f;
+}
+
+.circle-header {
+    color: #1c182c;
 }

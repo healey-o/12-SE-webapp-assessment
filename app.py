@@ -7,6 +7,7 @@ import uuid
 from setup_db import User, Task, Group
 import datetime
 
+#Initialisation
 app = Flask(__name__)
 app.secret_key = '0f71536e0640da386f0537f1'
 
@@ -122,7 +123,8 @@ def completeTask():
     if task:
         task.completed = True
         session.commit()
-    session.update(Task).where(Task.task_id == task_id).values(completed=1)
+    session.query(Task).filter(Task.task_id == task_id).update({Task.completed: 1})
+    session.commit()
 
     return redirect(url_for('dashboard'))
 
@@ -140,10 +142,14 @@ def submitTask():
     task = request.form['task']
 
     if request.form['group-select'] != 'new':
-        print(request.form.get('group-select'))
-        group = request.form['group-select']
+        groupId = request.form['group-select']
+        group = session.query(Group).filter(Group.group_id == groupId).first()
+        
     else:
-        group = request.form['new-group-input']
+        new_group_name = request.form['new-group-input']
+        new_group = Group(user_id=userId, group_name=new_group_name, group_id=str(uuid.uuid4()))
+        session.add(new_group)
+        group = new_group
 
     details = request.form['description']
 
@@ -159,23 +165,19 @@ def submitTask():
     
     userId = flask_session.get('userId')
 
-    groups = session.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
-
-    if group not in groups:
-        add_group = Group(user_id=userId, group_name=group, group_id=str(uuid.uuid4()))
-        session.add(add_group)
-
     # Check for errors in the form data
     if task == '':
         errors.append('empty_field')
     
     if len(errors) > 0:
+        groups = session.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
         return render_template('add_task.html', errors=errors,groups=groups)
     else:
-        group_id = session.query(Group).filter(Group.group_name == group).first().group_id
+        group_id = session.query(Group).filter(Group.group_name == group.group_name and Group.user_id == userId).first().group_id
 
         task = Task(user_id=userId, task_id=str(uuid.uuid4()), name=task, details=details, group_id=group_id, important=important, due_date=due_date, completed=False)
         session.add(task)
+        session.commit()
 
         return redirect(url_for('dashboard'))
 
