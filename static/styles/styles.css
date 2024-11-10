@@ -166,6 +166,32 @@ header {
     height: 190px;
     background-color: var(--bulma-info);
     color:#0f141f;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+
+.task-circle:after {
+    content: 'Details...';
+    position: absolute;
+    opacity: 0;  
+    height: 100%;
+    top: 0px;
+    right: -20px;
+    align-content: center;
+    padding: 10px;
+    transition: 0.5s;
+    color: #0f141f;
+    background-color: var(--bulma-info-light);
+}
+  
+.task-circle:hover{
+    padding-right: 60px;
+    padding-left:0px;
+}
+  
+.task-circle:hover:after {
+    opacity: 1;
+    right: 0px;
 }
 
 .circle-header {

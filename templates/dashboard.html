@@ -54,7 +54,7 @@
             {% for task in group_tasks %}
                 {% if loop.index < 3 %}
                     <div class="column is-one-third is-offset-{{ ((3 - group_tasks|length) * 2 if not group_tasks|length > 2 else 0) if loop.index == 1 else 0 }}">
-                        <div class="task-circle">
+                        <div class="task-circle" onclick="window.location.href='/task/{{ task.task_id }}'">
                             <article class="media">
                                 <div class="media-content">
                                     <div class="content">
@@ -86,7 +86,7 @@
                     {% set remaining_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list | length - 2 %}
                         {% if remaining_tasks > 0 %}
                             <div class="column is-one-third">
-                                <div class="task-circle">
+                                <div class="task-circle" onclick="window.location.href='/group/{{ group.group_id }}'">
                                     <article class="media">
                                         <div class="media-content">
                                             <div class="content">

@@ -13,10 +13,10 @@ app.secret_key = '0f71536e0640da386f0537f1'
 
 engine = create_engine('sqlite:///userdata.db')
 Session = sessionmaker(bind=engine)
-session = Session()
+sessionDb = Session()
 # There are two types of sessions in this project: 
-# flask_session from flask (renamed to avoid conflict) and session from sqlalchemy
-# flask_session is used to store the user's session data, while session from sqlalchemy is used to interact with the database
+# flask_session from flask (renamed to avoid conflict) and sessionDb is from sqlalchemy
+# flask_session is used to store the user's session data, while sessionDb is used to interact with the database.
 
 #Welcome page when not signed in
 @app.route('/')
@@ -49,7 +49,7 @@ def submitSignup():
         errors.append('match_password')
 
 
-    users = session.query(User).filter(User.username == username).all()
+    users = sessionDb.query(User).filter(User.username == username).all()
     if len(users) > 0:
         errors.append('username_taken')
 
@@ -61,12 +61,12 @@ def submitSignup():
         unique_id = str(uuid.uuid4())#gives each user a unique uuid
 
         user = User(id=unique_id, username=username, password=generate_password_hash(password))
-        session.add(user)
+        sessionDb.add(user)
 
         # Default groups for each user
-        session.add(Group(user_id=unique_id, group_name='Personal', group_id=str(uuid.uuid4())))
-        session.add(Group(user_id=unique_id, group_name='School', group_id=str(uuid.uuid4())))
-        session.commit()
+        sessionDb.add(Group(user_id=unique_id, group_name='Personal', group_id=str(uuid.uuid4())))
+        sessionDb.add(Group(user_id=unique_id, group_name='School', group_id=str(uuid.uuid4())))
+        sessionDb.commit()
 
         
         flask_session['userId'] = user.id
@@ -91,7 +91,7 @@ def submitLogin():
         return render_template("login.html",failed_attempt=True)
 
     # Check if the user exists
-    user = session.query(User).filter(User.username == username).first()
+    user = sessionDb.query(User).filter(User.username == username).first()
     if user and user.check_password(password):
         # Set the session variables
         flask_session['userId'] = user.id
@@ -110,9 +110,9 @@ def dashboard():
     if userId is None:
         return redirect(url_for('login'))
     else:
-        tasks = session.query(Task).filter(Task.user_id == userId).order_by(Task.due_date).all()
+        tasks = sessionDb.query(Task).filter(Task.user_id == userId).order_by(Task.due_date).all()
 
-        groups = session.query(Group).filter(Group.user_id == userId).all()
+        groups = sessionDb.query(Group).filter(Group.user_id == userId).all()
 
         return render_template('dashboard.html', tasks=tasks, groups=groups)
 
@@ -120,17 +120,17 @@ def dashboard():
 @app.route('/complete', methods=['POST'])
 def completeTask():
     task_id = request.form['task_id']
-    task = session.query(Task).filter(Task.task_id == task_id).first()
+    task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
     if task:
         task.completed = True
-        session.commit()
+        sessionDb.commit()
 
     return redirect(url_for('dashboard'))
 
 # Load the add task page
 @app.route('/addtask', methods=['GET'])
 def addtask():
-    groups = session.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
+    groups = sessionDb.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
 
     return render_template('add_task.html',groups=groups)
 
@@ -144,13 +144,13 @@ def submitTask():
 
     if request.form['group-select'] != 'new':
         groupId = request.form['group-select']
-        group = session.query(Group).filter(Group.group_id == groupId).first()
+        group = sessionDb.query(Group).filter(Group.group_id == groupId).first()
         
     else:
         new_group_name = request.form['new-group-input']
         new_group = Group(user_id=userId, group_name=new_group_name, group_id=str(uuid.uuid4()))
-        session.add(new_group)
-        session.commit()
+        sessionDb.add(new_group)
+        sessionDb.commit()
         group = new_group
 
     details = request.form['description']
@@ -172,25 +172,103 @@ def submitTask():
         errors.append('empty_field')
     
     if len(errors) > 0:
-        groups = session.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
+        groups = sessionDb.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
         return render_template('add_task.html', errors=errors,groups=groups)
     else:
-        group_id = session.query(Group).filter(Group.group_name == group.group_name and Group.user_id == userId).first().group_id
+        group_id = sessionDb.query(Group).filter(Group.group_name == group.group_name and Group.user_id == userId).first().group_id
 
         task = Task(user_id=userId, task_id=str(uuid.uuid4()), name=task, details=details, group_id=group_id, important=important, due_date=due_date, completed=False)
-        session.add(task)
-        session.commit()
+        sessionDb.add(task)
+        sessionDb.commit()
 
         return redirect(url_for('dashboard'))
 
 #View specific group
 @app.route('/group/<group_id>')
 def viewGroup(group_id):
-    group = session.query(Group).filter(Group.group_id == group_id).first()
-    tasks = session.query(Task).filter(Task.group_id == group_id).order_by(Task.due_date).all()
+    group = sessionDb.query(Group).filter(Group.group_id == group_id).first()
+    tasks = sessionDb.query(Task).filter(Task.group_id == group_id).order_by(Task.due_date).all()
 
     return render_template('group.html', group=group, tasks=tasks)
 
+# View task details
+@app.route('/task/<task_id>')
+def viewTask(task_id):
+    task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
+    group = sessionDb.query(Group).filter(Group.group_id == task.group_id).first()
+
+    return render_template('task.html', task=task, group=group)
+
+# Edit task details
+@app.route('/edittask/<task_id>', methods=['GET'])
+def editTask(task_id):
+    task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
+    groups = sessionDb.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
+
+    return render_template('edit_task.html', task=task, groups=groups)
+
+# Submit edited task details
+@app.route('/edittask/<task_id>', methods=['POST'])
+def submitTaskEdit(task_id):
+    errors = []
+
+    # Get the form data
+    task = request.form['task']
+
+    if request.form['group-select'] != 'new':
+        groupId = request.form['group-select']
+        group = sessionDb.query(Group).filter(Group.group_id == groupId).first()
+        
+    else:
+        new_group_name = request.form['new-group-input']
+        new_group = Group(user_id=userId, group_name=new_group_name, group_id=str(uuid.uuid4()))
+        sessionDb.add(new_group)
+        sessionDb.commit()
+        group = new_group
+
+    details = request.form['description']
+
+    due_date = request.form['due-date']
+    if due_date == '':
+        errors.append('empty_field')
+    due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d')
+
+    if request.form.get('important') == 'on':
+        important = True
+    else:
+        important = False
+    
+    userId = flask_session.get('userId')
+
+    # Check for errors in the form data
+    if task == '':
+        errors.append('empty_field')
+    
+    if len(errors) > 0:
+        groups = sessionDb.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
+        return render_template('edit_task.html', errors=errors,groups=groups)
+    else:
+        group_id = sessionDb.query(Group).filter(Group.group_name == group.group_name and Group.user_id == userId).first().group_id
+
+        task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
+        task.name = task
+        task.details = details
+        task.group_id = group_id
+        task.important = important
+        task.due_date = due_date
+        sessionDb.commit()
+
+        return redirect(url_for('dashboard'))
+
+#Delete task
+@app.route('/deletetask/<task_id>')
+def deleteTask(task_id):
+    task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
+    if task:
+        sessionDb.delete(task)
+        sessionDb.commit()
+
+    return redirect(url_for('dashboard'))
 
 
 app.run(debug=True, reloader_type='stat', port=5000)
