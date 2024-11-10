@@ -8,6 +8,32 @@
     <p class="has-text-centered">Welcome to the dashboard!</p>
     <hr>
     <div class="columns is-multiline">
+        <div class="column is-full">
+            <p class="title is-4 has-text-centered has-text-danger">Important Tasks</p>
+        </div>
+            {% for task in tasks %}
+                {% if task.important and not task.completed %}
+                    <div class="column is-half is-offset-3">
+                        <div class="box has-background-danger-30">
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <strong>Task:</strong> {{ task.name }}<br>
+                                        <strong>Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
+                                    </p>
+                                </div>
+                                <form action="/complete" method="POST">
+                                    <input type="hidden" name="task_id" value="{{ task.task_id }}">
+                                    <input type="submit" value="Complete" class="button is-primary">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="columns is-multiline">
         {% for group in groups %}
             <div class="circle-holder column is-full is-centered">
                 <div class="collision-checker">
@@ -19,14 +45,15 @@
                 </div>
             </div>
             {% set has_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list | length > 0 %}
+            {% set group_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list %}
             {% if not has_tasks %}
                 <div class="column is-full has-text-centered">
                     <p>No tasks available for this group.</p>
                 </div>
             {% endif %}
-            {% for task in tasks %}
-                {% if task.group_id == group.group_id and not loop.index > 3%}
-                    <div class="column is-one-third">
+            {% for task in group_tasks %}
+                {% if loop.index < 3 %}
+                    <div class="column is-one-third is-offset-{{ ((3 - group_tasks|length) * 2 if not group_tasks|length > 2 else 0) if loop.index == 1 else 0 }}">
                         <div class="task-circle">
                             <article class="media">
                                 <div class="media-content">
