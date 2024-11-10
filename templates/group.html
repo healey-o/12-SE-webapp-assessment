@@ -1,0 +1,52 @@
+{% extends 'base_loggedin.html' %}
+
+{% block title %}Study Planner: {{ group.group_name }}{% endblock %}
+
+{% block heading %}{{ group.group_name }}{% endblock %}
+
+{% block content %}
+    <div class="columns is-centered">
+        <div class="column is-half">
+            <div class="box">
+                <div class="columns is-multiline">
+                    {% for task in tasks %}
+                        {% if task.group_id == group.group_id %}
+                            <div class="column is-one-third">
+                                <div class="task-circle">
+                                    <article class="media">
+                                        <div class="media-content">
+                                            <div class="content">
+                                                <p>
+                                                    <strong class="circle-header">Task:</strong> {{ task.name }}<br>
+                                                    
+                                                    {% if not task.completed %}
+                                                        <strong class="circle-header">Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
+                                                        {% if task.important %}
+                                                            <strong class="has-text-danger circle-header">Important</strong><br>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <strong class="has-text-success">Task Complete</strong>
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                            {% if not task.completed %}
+                                                <form action="/complete" method="POST">
+                                                    <input type="hidden" name="task_id" value="{{ task.task_id }}">
+                                                    <input type="submit" value="Complete" class="button is-primary">
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+            {% if tasks|length == 0 %}
+                <div class="column is-full has-text-centered">
+                    <p>No tasks available for this group.</p>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

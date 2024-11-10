@@ -110,12 +110,13 @@ def dashboard():
     if userId is None:
         return redirect(url_for('login'))
     else:
-        tasks = session.query(Task).filter(Task.user_id == userId).all()
+        tasks = session.query(Task).filter(Task.user_id == userId).order_by(Task.due_date).all()
 
         groups = session.query(Group).filter(Group.user_id == userId).all()
 
         return render_template('dashboard.html', tasks=tasks, groups=groups)
 
+# Registering a task as complete
 @app.route('/complete', methods=['POST'])
 def completeTask():
     task_id = request.form['task_id']
@@ -123,17 +124,17 @@ def completeTask():
     if task:
         task.completed = True
         session.commit()
-    session.query(Task).filter(Task.task_id == task_id).update({Task.completed: 1})
-    session.commit()
 
     return redirect(url_for('dashboard'))
 
+# Load the add task page
 @app.route('/addtask', methods=['GET'])
 def addtask():
     groups = session.query(Group).filter(Group.user_id == flask_session.get('userId')).all()
 
     return render_template('add_task.html',groups=groups)
 
+# Submitting a new task
 @app.route('/addtask', methods=['POST'])
 def submitTask():
     errors = []
@@ -149,6 +150,7 @@ def submitTask():
         new_group_name = request.form['new-group-input']
         new_group = Group(user_id=userId, group_name=new_group_name, group_id=str(uuid.uuid4()))
         session.add(new_group)
+        session.commit()
         group = new_group
 
     details = request.form['description']
@@ -180,5 +182,15 @@ def submitTask():
         session.commit()
 
         return redirect(url_for('dashboard'))
+
+#View specific group
+@app.route('/group/<group_id>')
+def viewGroup(group_id):
+    group = session.query(Group).filter(Group.group_id == group_id).first()
+    tasks = session.query(Task).filter(Task.group_id == group_id).order_by(Task.due_date).all()
+
+    return render_template('group.html', group=group, tasks=tasks)
+
+
 
 app.run(debug=True, reloader_type='stat', port=5000)

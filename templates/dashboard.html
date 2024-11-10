@@ -10,15 +10,22 @@
     <div class="columns is-multiline">
         {% for group in groups %}
             <div class="circle-holder column is-full is-centered">
-                <div class="group-circle">
-                    <div class="hero-body">
-                        <p class="group-circle-title title is-4">{{ group.group_name }}</p>
-                    </div>
+                <div class="collision-checker">
+                        <div class="group-circle" onclick="window.location.href='/group/{{ group.group_id }}'">
+                            <div class="hero-body">
+                                <p class="group-circle-title title is-4">{{ group.group_name }}</p>
+                            </div>
+                        </div>
                 </div>
             </div>
             {% set has_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list | length > 0 %}
+            {% if not has_tasks %}
+                <div class="column is-full has-text-centered">
+                    <p>No tasks available for this group.</p>
+                </div>
+            {% endif %}
             {% for task in tasks %}
-                {% if task.group_id == group.group_id %}
+                {% if task.group_id == group.group_id and not loop.index > 3%}
                     <div class="column is-one-third">
                         <div class="task-circle">
                             <article class="media">
@@ -39,7 +46,7 @@
                                     </div>
                                     {% if not task.completed %}
                                         <form action="/complete" method="POST">
-                                            <input type="hidden" name="task_id" value="{{ task[1] }}">
+                                            <input type="hidden" name="task_id" value="{{ task.task_id }}">
                                             <input type="submit" value="Complete" class="button is-primary">
                                         </form>
                                     {% endif %}
@@ -48,14 +55,22 @@
                         </div>
                     </div>
                 {% endif %}
+                {% if loop.index == 3 %}
+                    {% set remaining_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list | length - 2 %}
+                        {% if remaining_tasks > 0 %}
+                            <div class="column is-one-third">
+                                <div class="task-circle">
+                                    <article class="media">
+                                        <div class="media-content">
+                                            <div class="content">
+                                                <p class="has-text-centered">+{{ remaining_tasks }} more tasks</p>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        {% endif %}
+                {% endif %}
             {% endfor %}
-            {% if not has_tasks %}
-                <div class="column is-4 is-offset-4">
-                    <div class="task-circle">
-                        <p class="has-text-centered">No tasks in this group.</p>
-                    </div>
-                </div>
-            {% endif %}
         {% endfor %}
-    </div>
 {% endblock %}

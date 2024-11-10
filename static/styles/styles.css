@@ -63,15 +63,25 @@ header {
     align-items: center;
 }
 
-.group-circle {
-    animation: circle-leave 0.3s ease-in-out forwards;
+.collision-checker {
     position: relative;
     margin: .5em;
     border-radius: 50%;
     width: 200px;
     text-align: center;
     align-content: center;
-    overflow: hidden;
+    overflow: visible;
+    height: 200px;
+}
+
+.group-circle {
+    animation: circle-leave 0.3s ease-in-out forwards;
+    position: relative;
+    border-radius: 50%;
+    width: 200px;
+    text-align: center;
+    align-content: center;
+    overflow: visible;
     height: 200px;
     background-color: var(--bulma-link);
 }
@@ -91,7 +101,8 @@ header {
     }
 }
 
-.group-circle:hover {
+/* Checks an unchnaging div to avoid issues when hovering near the edge as it resizes */
+.collision-checker:hover > .group-circle {
     animation: circle-hover 0.4s ease-in-out;
     cursor: pointer;
     background-color: var(--bulma-link-30);
@@ -118,7 +129,9 @@ header {
     }
 }
 
-.group-circle:active {
+
+
+.collision-checker:active > .group-circle {
     animation: circle-active 0.1s ease-in-out;
     background-color: var(--bulma-link);
     transform: scale(1);
