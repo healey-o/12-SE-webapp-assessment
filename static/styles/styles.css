@@ -185,13 +185,14 @@ header {
 }
   
 .task-circle:hover{
-    padding-right: 60px;
-    padding-left:0px;
+    padding-right: 90px;
+    padding-left:20px;
 }
   
 .task-circle:hover:after {
     opacity: 1;
     right: 0px;
+    border-radius: 50%;
 }
 
 .circle-header {

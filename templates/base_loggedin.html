@@ -83,6 +83,19 @@
                 </h1>
         </section>
 
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="notification">
+                    <button class="delete" onclick="this.parentElement.style.display='none';"></button>
+                    <ul>
+                    {% for message in messages %}
+                        <li class="has-text-success">{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+
         <div class='content'>
             {% block content %}{% endblock %}
         </div>
