@@ -17,6 +17,8 @@
     --accent-color: light-dark(#1c182c, #e0e0e0);
     --accent-color-invert: light-dark(#e0e0e0, #1c182c);
 
+    --info-highlights: light-dark(#e4ed6e, #303300);
+
     
 }
 
@@ -75,7 +77,6 @@ header {
 }
 
 .group-circle {
-    animation: circle-leave 0.3s ease-in-out forwards;
     position: relative;
     border-radius: 50%;
     width: 200px;
@@ -84,6 +85,10 @@ header {
     overflow: visible;
     height: 200px;
     background-color: var(--bulma-link);
+}
+
+.collision-checker > .group-circle {
+    animation: circle-leave 0.3s ease-in-out forwards;
 }
 
 /* Animation for when circle leaves hover */
@@ -156,7 +161,7 @@ header {
 .task-circle {
     position: relative;
     margin: .5em;
-    border: var(--bulma-info-dark) solid 7px;
+    border: var(--info-highlights) solid 7px;
     border-radius: 50%;
     width: 320px;
     text-align: center;
@@ -197,4 +202,8 @@ header {
 
 .circle-header {
     color: #1c182c;
+}
+
+.important-text {
+    color: #e0e0e0;
 }

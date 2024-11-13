@@ -2,16 +2,18 @@
 
 {% block title %}Task: {{ task.title }}{% endblock %}
 
-{% block heading %}Task{% endblock %}
+{% block heading %}{{ task.name }}{% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="columns is-centered">
             <div class="column is-half">
                 <div class="box">
-                    <h2 class="title is-4">{{ task.name }}</h2>
-                    <p>{{ task.details }}</p>
-
+                    {% if task.details %}
+                        <p>{{ task.details }}</p>
+                    {% else %}
+                        <p>No details available for this task.</p>
+                    {% endif %}
                     {% if not task.completed %}
                         <strong>Due:</strong> {{ task.due_date.strftime('%A, %d/%m/%Y') }}<br>
                         {% if task.important %}

@@ -8,30 +8,31 @@
     <p class="has-text-centered">Welcome to the dashboard!</p>
     <hr>
     <div class="columns is-multiline">
+        {% if tasks | selectattr('important', 'equalto', True) | selectattr('completed', 'equalto', False) | list | length > 0 %}
         <div class="column is-full">
             <p class="title is-4 has-text-centered has-text-danger">Important Tasks</p>
         </div>
+        {% endif %}
             {% for task in tasks %}
                 {% if task.important and not task.completed %}
                     <div class="column is-half is-offset-3">
                         <div class="box has-background-danger-30">
                             <div class="media-content">
                                 <div class="content">
-                                    <p>
-                                        <strong>Task:</strong> {{ task.name }}<br>
-                                        <strong>Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
+                                    <p class="important-text">
+                                        <strong class="important-text">Task:</strong> {{ task.name }}<br>
+                                        <strong class="important-text">Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
                                     </p>
                                 </div>
                                 <form action="/complete" method="POST">
                                     <input type="hidden" name="task_id" value="{{ task.task_id }}">
-                                    <input type="submit" value="Complete" class="button is-primary">
+                                    <input type="submit" value="Complete" class="button is-danger">
                                 </form>
                             </div>
                         </div>
                     </div>
                 {% endif %}
             {% endfor %}
-        </div>
     </div>
     <div class="columns is-multiline">
         {% for group in groups %}
@@ -47,8 +48,10 @@
             {% set has_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list | length > 0 %}
             {% set group_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list %}
             {% if not has_tasks %}
-                <div class="column is-full has-text-centered">
-                    <p>No tasks available for this group.</p>
+                <div class="column is-half is-offset-3 has-text-centered">
+                    <div class="box has-background-info">
+                        <p class="has-text-centered circle-header">No tasks available for this group.</p>
+                    </div>
                 </div>
             {% endif %}
             {% for task in group_tasks %}

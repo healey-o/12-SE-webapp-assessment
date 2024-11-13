@@ -1,0 +1,41 @@
+{% extends "base_loggedin.html" %}
+
+{% block title %}Study Planner: My Day{% endblock %}
+
+{% block heading %}My Day{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="day-overview">
+            <h2>My Day</h2>
+            {% if tasks|length == 0 %}
+                <p>No tasks for today! Add some tasks <a href="/addtask">here.</a></p>
+
+            {% else %}
+            
+            <div class="columns is-multiline">
+                <div class="column is-half">
+                    <h3>Important Tasks</h3>
+                    <ul>
+                        {% for task in tasks %}
+                            {% if task.important %}
+                                <li>{{ task.name }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="column is-half">
+                    <h3>Other Tasks</h3>
+                    <ul>
+                        {% for task in tasks %}
+                            {% if not task.important %}
+                                <li>{{ task.name }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

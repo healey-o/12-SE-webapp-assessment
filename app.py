@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask import session as flask_session
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Date
 from sqlalchemy.orm import sessionmaker
 from werkzeug.security import generate_password_hash
 import uuid
@@ -10,6 +10,7 @@ import datetime
 #Initialisation
 app = Flask(__name__)
 app.secret_key = '0f71536e0640da386f0537f1'
+
 
 engine = create_engine('sqlite:///userdata.db')
 Session = sessionmaker(bind=engine)
@@ -96,13 +97,11 @@ def submitLogin():
         # Set the session variables
         flask_session['userId'] = user.id
         flask_session['username'] = user.username
-        flash('Login successful!')
         return redirect(url_for('dashboard'))
     else:
         return render_template("login.html",failed_attempt=True)
         
     
-
 
 #Main page after login
 @app.route('/dashboard')
@@ -161,7 +160,7 @@ def submitTask():
     due_date = request.form['due-date']
     if due_date == '':
         errors.append('empty_field')
-    due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d')
+    due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d').date()
 
     if request.form.get('important') == 'on':
         important = True
@@ -241,7 +240,7 @@ def submitTaskEdit(task_id):
     
     if due_date == '':
         errors.append('empty_field')
-    due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d')
+    due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d').date()
     
     userId = flask_session.get('userId')
 
@@ -277,5 +276,13 @@ def deleteTask(task_id):
     flash('Task deleted.')
     return redirect(url_for('dashboard'))
 
+#My Day page
+@app.route('/myday')
+def myday():
+    userId = flask_session.get('userId')
+    
+    tasks = sessionDb.query(Task).filter(Task.user_id == userId, Task.due_date.cast(Date) == datetime.datetime.now().date()).all()
+
+    return render_template('myday.html', tasks=tasks)
 
 app.run(debug=True, reloader_type='stat', port=5000)
