@@ -58,35 +58,7 @@
                 {% if loop.index < 3 %}
                     <!-- Centre tasks based on how many are visible -->
                     <div class="column is-one-third is-offset-{{ ((3 - group_tasks|length) * 2 if not group_tasks|length > 2 else 0) if loop.index == 1 else 0 }}">
-                        <div class="box task-box" onclick="window.location.href='/task/{{ task.task_id }}'">
-                            <div class="content">
-                                <p>
-                                    <strong class="{{ 'has-text-success' if task.completed else '' }}">{{ task.name }}</strong>
-                                    
-                                    <hr>
-    
-                                    {% if not task.completed %}
-                                        <strong class="">Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
-                                        {% if task.important %}
-                                            <strong class="has-text-danger circle-header">Important</strong><br>
-                                        {% endif %}
-                                    {% else %}
-                                        <strong class="has-text-success">Task Complete</strong>
-                                    {% endif %}
-                                </p>
-                            </div>
-                            {% if not task.completed %}
-                                <form action="/complete" method="POST">
-                                    <input type="hidden" name="task_id" value="{{ task.task_id }}">
-                                    <input type="submit" value="Complete" class="task-complete-button">
-                                </form>
-                            {% else %}
-                                <form action="/decomplete" method="POST">
-                                    <input type="hidden" name="task_id" value="{{ task.task_id }}">
-                                    <input type="submit" value="Remove Complete" class="task-complete-button">
-                                </form>
-                            {% endif %}
-                        </div>
+                        {% include 'task_box.html' %}
                     </div>
                 {% endif %}
                 {% if loop.index == 3 %}

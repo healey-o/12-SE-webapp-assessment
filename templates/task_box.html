@@ -1,0 +1,35 @@
+<!-- This is used as a template for showing a task on the dashboard, group pages and the My Day page -->
+<div class="box task-box" onclick="window.location.href='/task/{{ task.task_id }}'">
+    <div class="content">
+        <p>
+            <strong class="{{ 'has-text-success' if task.completed else '' }}">{{ task.name }}</strong>
+            
+            <hr>
+
+            {% if showDetails %}
+                {{ task.details }}
+                <hr>
+            {% endif %}
+
+            {% if not task.completed %}
+                <strong class="">Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
+                {% if task.important %}
+                    <strong class="has-text-danger circle-header">Important</strong><br>
+                {% endif %}
+            {% else %}
+                <strong class="has-text-success">Task Complete</strong>
+            {% endif %}
+        </p>
+    </div>
+    {% if not task.completed %}
+        <form action="/complete" method="POST">
+            <input type="hidden" name="task_id" value="{{ task.task_id }}">
+            <input type="submit" value="Complete" class="task-complete-button">
+        </form>
+    {% else %}
+        <form action="/decomplete" method="POST">
+            <input type="hidden" name="task_id" value="{{ task.task_id }}">
+            <input type="submit" value="Remove Complete" class="task-complete-button">
+        </form>
+    {% endif %}
+</div>

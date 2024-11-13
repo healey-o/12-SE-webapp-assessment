@@ -114,7 +114,7 @@ def dashboard():
 
         groups = sessionDb.query(Group).filter(Group.user_id == userId).all()
 
-        return render_template('dashboard.html', tasks=tasks, groups=groups)
+        return render_template('dashboard.html', tasks=tasks, groups=groups, showDetails=False)
 
 # Registering a task as complete
 @app.route('/complete', methods=['POST'])
@@ -168,10 +168,10 @@ def submitTask():
 
     details = request.form['description']
 
-    due_date = request.form['due-date']
-    if due_date == '':
+    dueDate = request.form['due-date']
+    if dueDate == '':
         errors.append('empty_field')
-    due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d').date()
+    dueDate = datetime.datetime.strptime(dueDate, '%Y-%m-%d').date()
 
     if request.form.get('important') == 'on':
         important = True
@@ -188,7 +188,7 @@ def submitTask():
     else:
         group_id = sessionDb.query(Group).filter(Group.group_name == group.group_name and Group.user_id == userId).first().group_id
 
-        task = Task(user_id=userId, task_id=str(uuid.uuid4()), name=task, details=details, group_id=group_id, important=important, due_date=due_date, completed=False)
+        task = Task(user_id=userId, task_id=str(uuid.uuid4()), name=task, details=details, group_id=group_id, important=important, due_date=dueDate, completed=False)
         sessionDb.add(task)
         sessionDb.commit()
 
@@ -201,7 +201,7 @@ def viewGroup(group_id):
     group = sessionDb.query(Group).filter(Group.group_id == group_id).first()
     tasks = sessionDb.query(Task).filter(Task.group_id == group_id).order_by(Task.due_date).all()
 
-    return render_template('group.html', group=group, tasks=tasks)
+    return render_template('group.html', group=group, tasks=tasks, showDetails=True)
 
 # View task details
 @app.route('/task/<task_id>')
@@ -228,7 +228,7 @@ def submitTaskEdit(task_id):
     name = request.form['name']
     details = request.form['details']
     # group = request.form['group']
-    due_date = request.form['due_date']
+    dueDate = request.form['due_date']
 
     if request.form.get('important') == 'on':
         important = True
@@ -249,9 +249,9 @@ def submitTaskEdit(task_id):
 
 
     
-    if due_date == '':
+    if dueDate == '':
         errors.append('empty_field')
-    due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d').date()
+    dueDate = datetime.datetime.strptime(dueDate, '%Y-%m-%d').date()
     
     userId = flask_session.get('userId')
 
@@ -270,7 +270,7 @@ def submitTaskEdit(task_id):
         task.details = details
         # task.group_id = group_id
         task.important = important
-        task.due_date = due_date
+        task.due_date = dueDate
         sessionDb.commit()
 
         flash('Task edited successfully!')
@@ -297,7 +297,7 @@ def myday():
     tasks = sessionDb.query(Task).filter(Task.user_id == userId).all()
     tasks = [task for task in tasks if task.due_date.date() == current_date]
 
-    return render_template('myday.html', tasks=tasks)
+    return render_template('myday.html', tasks=tasks, showDetails=True)
 
 #Log out
 @app.route('/logout')

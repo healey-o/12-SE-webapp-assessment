@@ -18,22 +18,7 @@
                     <ul>
                         {% for task in tasks %}
                             {% if task.important %}
-                                <div class="box">
-                                    <div class="content">
-                                        <p>
-                                            <strong>Task:</strong> {{ task.name }}<br>
-                                            {% if task.details %}
-                                                <strong>Details:</strong> {{ task.details }}
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                    <form action="/complete" method="POST">
-                                        <input type="hidden" name="task_id" value="{{ task.task_id }}">
-                                        <input type="submit" value="Complete" class="button is-primary">
-                                        <a class="button is-info" href="/task/{{ task.task_id }}">Details</a>
-                                    </form>
-                                    
-                                </div>
+                                {% include 'task_box.html' %}
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -43,21 +28,7 @@
                     <ul>
                         {% for task in tasks %}
                             {% if not task.important %}
-                                <div class="box">
-                                    <div class="content">
-                                        <p>
-                                            <strong>Task: </strong> {{ task.name }}<br>
-                                            {% if task.details %}
-                                                <strong>Details: </strong>{{ task.details }}
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                    <form action="/complete" method="POST">
-                                        <input type="hidden" name="task_id" value="{{ task.task_id }}">
-                                        <input type="submit" value="Complete" class="button is-primary">
-                                        <a class="button is-info" href="/task/{{ task.task_id }}">Details</a>
-                                    </form>
-                                </div>
+                                {% include 'task_box.html' %}
                             {% endif %}
                         {% endfor %}
                     </ul>

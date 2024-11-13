@@ -15,7 +15,7 @@
     /* Custom color scheme */
     color-scheme: light dark;
     --accent-color: light-dark(#1c182c, #e0e0e0);
-    --accent-color-invert: light-dark(#e0e0e0, #1c182c);
+    --accent-color-invert: light-dark(#e0e0e0, #160f34);
 
 
     
@@ -26,9 +26,16 @@ header {
     border-bottom: var(--accent-color-invert) solid 2px;
 }
 
+body {
+    margin: none;
+    padding: none;
+}
+
 #page-container {
     position: relative;
-    min-height: 100%;
+    min-height: 100vh;
+    margin: none;
+    padding: none;
 }
 
 .navbar {
@@ -195,6 +202,7 @@ header {
 .task-circle:hover{
     padding-right: 90px;
     padding-left:20px;
+    background-color: var(--accent-color-invert);
 }
   
 .task-circle:hover:after {
@@ -245,6 +253,10 @@ header {
     font-size: 0.7rem;
 }
 
+.task-box:hover{
+    background-color: var(--accent-color-invert);
+}
+
 .task-box:hover:after {
     opacity: 1;
     bottom: 20px;
@@ -278,16 +290,8 @@ header {
     color: #000;
 }
 
-.task-box-detailed {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.5s;
-    cursor: pointer;
-    margin: 15px;
-}
-
 .footer {
     position: absolute;
-    bottom: 0;
+    bottom: 0px;
     width: 100%;
 }
