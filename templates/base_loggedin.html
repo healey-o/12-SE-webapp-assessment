@@ -8,97 +8,102 @@
     </head>
     
     <body>
-        <header>
-            <nav class="navbar" role="navigation" aria-label="main navigation">
-                <div class="navbar-brand">
+        <div id="page-container">
+            <header>
+                <nav class="navbar" role="navigation" aria-label="main navigation">
+                    <div class="navbar-brand">
 
-                    <!-- Custom SVG Logo that takes up most of the lines on this template -->
-                    <svg id="logo-svg" width="60" height="60" viewBox="-40 -40 80 80">
-                        <circle fill="var(--accent-color)" r="8" class="logo"/>
-                        <circle fill="transparent" stroke="var(--accent-color)" r="15" class="logo"/>
-                        <circle fill="transparent" stroke="var(--accent-color)" r="25" class="logo"/>
-                        <circle fill="transparent" stroke="var(--accent-color)" r="35" class="logo"/>
-                        <g>
-                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="1s" repeatCount="indefinite"/>            
-                            <g transform="translate(0, -15)">
-                                <circle fill="var(--accent-color)" r="4" class="logo"/>
+                        <!-- Custom SVG Logo that takes up most of the lines on this template -->
+                        <svg id="logo-svg" width="60" height="60" viewBox="-40 -40 80 80">
+                            <circle fill="var(--accent-color)" r="8" class="logo"/>
+                            <circle fill="transparent" stroke="var(--accent-color)" r="15" class="logo"/>
+                            <circle fill="transparent" stroke="var(--accent-color)" r="25" class="logo"/>
+                            <circle fill="transparent" stroke="var(--accent-color)" r="35" class="logo"/>
+                            <g>
+                                <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="1s" repeatCount="indefinite"/>            
+                                <g transform="translate(0, -15)">
+                                    <circle fill="var(--accent-color)" r="4" class="logo"/>
+                                </g>
                             </g>
-                        </g>
-                        <g>
-                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite"/>            
-                            <g transform="translate(25, 0)">
-                                <circle fill="var(--accent-color)" r="4" class="logo"/>
+                            <g>
+                                <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite"/>            
+                                <g transform="translate(25, 0)">
+                                    <circle fill="var(--accent-color)" r="4" class="logo"/>
+                                </g>
                             </g>
-                        </g>
-                        <g>
-                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="3s" repeatCount="indefinite"/>            
-                            <g transform="translate(0, 35)">
-                                <circle fill="var(--accent-color)" r="4" class="logo"/>
+                            <g>
+                                <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="3s" repeatCount="indefinite"/>            
+                                <g transform="translate(0, 35)">
+                                    <circle fill="var(--accent-color)" r="4" class="logo"/>
+                                </g>
                             </g>
-                        </g>
-                    </svg>
-                </div>
-            
-                <div class="navbar-menu">
-                    <div class="navbar-item">
-                        <div class="buttons">
-                            <div class="navbar-start">
-                                <a class="button is-primary" href="/dashboard">
-                                    Dashboard
+                        </svg>
+                    </div>
+                
+                    <div class="navbar-menu">
+                        <div class="navbar-start">
+                            <a class="navbar-item" href="/dashboard">
+                                Dashboard
+                            </a>
+                            <a class="navbar-item" href="/myday">
+                                My Day
+                            </a>
+                            <a class="navbar-item" href="/addtask">
+                                Add Task
+                            </a>
+                        </div>
+                
+                    <div class="navbar-end">
+                        <div class="navbar-item">
+                            <div class="buttons">
+                                <a class="button is-link" href="">
+                                <strong>{{ session['username'] }}</strong>
                                 </a>
-
-
-                    
-                                <a class="button" href="/myday">
-                                    My Day
-                                </a>
-                    
-                                <a class="button is-info" href="/addtask">
-                                    Add Task
+                                <a class="button" href="/">
+                                    Log out
                                 </a>
                             </div>
                         </div>
                     </div>
-            
-                <div class="navbar-end">
-                    <div class="navbar-item">
-                        <div class="buttons">
-                            <a class="button is-link" href="">
-                            <strong>{{ session['username'] }}</strong>
-                            </a>
-                            <a class="button" href="/">
-                                Log out
-                            </a>
-                        </div>
                     </div>
-                </div>
-                </div>
-            </nav>
-        </header>
+                </nav>
+            </header>
 
-        <section class="hero">
-            <div class="hero-body">
-                <h1 class="title has-text-centered">
-                    {% block heading %}{% endblock %}
-                </h1>
-        </section>
+            <section class="hero">
+                <div class="hero-body">
+                    <h1 class="title has-text-centered">
+                        {% block heading %}{% endblock %}
+                    </h1>
+            </section>
 
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="notification">
-                    <button class="delete" onclick="this.parentElement.style.display='none';"></button>
-                    <ul>
-                    {% for message in messages %}
-                        <li class="has-text-success">{{ message }}</li>
-                    {% endfor %}
-                    </ul>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="notification">
+                        <button class="delete" onclick="this.parentElement.style.display='none';"></button>
+                        <ul>
+                        {% for message in messages %}
+                            <li class="has-text-success">{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class='content'>
+                {% block content %}{% endblock %}
+            </div>
+            <br>
+            <br>
+            <br>
+
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>
+                        Created by <a href="https://github.com/healey-o/12-SE-webapp-assessment">Oliver Healey</a> for a Year 12 Software Engineering Project.
+                    </p>
                 </div>
-            {% endif %}
-        {% endwith %}
-
-        <div class='content'>
-            {% block content %}{% endblock %}
+                    
+            </footer>
         </div>
-        
     </body>
 </html>

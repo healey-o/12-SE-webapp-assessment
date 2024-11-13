@@ -39,9 +39,11 @@
                                                 <form action="/complete" method="POST">
                                                     <input type="hidden" name="task_id" value="{{ task.task_id }}">
                                                     <input type="submit" value="Complete" class="button is-primary">
+                                                    <a class="button is-info" href="/task/{{ task.task_id }}">Details</a>
                                                 </form>
+                                            {% else %}
+                                                <a class="button is-info" href="/task/{{ task.task_id }}">Details</a>
                                             {% endif %}
-                                            <a class="button is-info" href="/task/{{ task.task_id }}">Details</a>
                                         </div>
                                     </article>
                                 </div>

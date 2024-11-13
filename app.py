@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask import session as flask_session
-from sqlalchemy import create_engine, Date
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from werkzeug.security import generate_password_hash
 import uuid
@@ -126,6 +126,17 @@ def completeTask():
         sessionDb.commit()
 
     flash('Task Complete!')
+    return redirect(url_for('dashboard'))
+
+# De-complete-ify a task
+@app.route('/decomplete', methods=['POST'])
+def decompleteTask():
+    task_id = request.form['task_id']
+    task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
+    if task:
+        task.completed = False
+        sessionDb.commit()
+
     return redirect(url_for('dashboard'))
 
 # Load the add task page
@@ -281,8 +292,17 @@ def deleteTask(task_id):
 def myday():
     userId = flask_session.get('userId')
     
-    tasks = sessionDb.query(Task).filter(Task.user_id == userId, Task.due_date.cast(Date) == datetime.datetime.now().date()).all()
+    current_date = datetime.datetime.now().date()
+    print(f"Current date: {current_date}")
+    tasks = sessionDb.query(Task).filter(Task.user_id == userId).all()
+    tasks = [task for task in tasks if task.due_date.date() == current_date]
 
     return render_template('myday.html', tasks=tasks)
+
+#Log out
+@app.route('/logout')
+def logout():
+    flask_session.clear()
+    return redirect(url_for('home'))
 
 app.run(debug=True, reloader_type='stat', port=5000)
