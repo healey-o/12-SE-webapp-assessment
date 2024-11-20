@@ -181,10 +181,13 @@ def submitTask():
         
     else:
         new_group_name = request.form['new-group-input']
-        new_group = Group(user_id=userId, group_name=new_group_name, group_id=str(uuid.uuid4()))
-        sessionDb.add(new_group)
-        sessionDb.commit()
-        group = new_group
+        if len(new_group_name) < 50 and new_group_name != '': # Group name must be less than 50 characters
+            new_group = Group(user_id=userId, group_name=new_group_name, group_id=str(uuid.uuid4()))
+            sessionDb.add(new_group)
+            sessionDb.commit()
+            group = new_group
+        else:
+            errors.append('group_name_length')
 
     details = request.form['description']
 
@@ -276,10 +279,13 @@ def submitTaskEdit(task_id):
         
     else:
         new_group_name = request.form['new-group-input']
-        new_group = Group(user_id=userId, group_name=new_group_name, group_id=str(uuid.uuid4()))
-        sessionDb.add(new_group)
-        sessionDb.commit()
-        group = new_group
+        if len(new_group_name) < 50 and new_group_name != '': # Group name must be less than 50 characters
+            new_group = Group(user_id=userId, group_name=new_group_name, group_id=str(uuid.uuid4()))
+            sessionDb.add(new_group)
+            sessionDb.commit()
+            group = new_group
+        else:
+            errors.append('group_name_length')
 
 
     

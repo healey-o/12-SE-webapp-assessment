@@ -33,6 +33,10 @@
             <div class="field">
                 <input id="new-group-input" class="input" type="text" name="new-group-input" placeholder="e.g. Math" style="display:none;" />
             </div>
+            {% if "group_name_length" in errors %}
+                <p class="help is-danger">Group name must be between 1 and 50 characters long.</p>
+                <br>
+            {% endif %}
 
             <br>
             
