@@ -5,46 +5,66 @@
 {% block heading %}Dashboard{% endblock %}
 
 {% block content %}
+    <!-- Welcome message -->
     <p class="has-text-centered">Welcome to the dashboard!</p>
     <hr>
+    
+    <!-- Hide completed tasks checkbox and form -->
+    <div class="dashboard-controls field has-text-centered">
+        <input id="hide-completed" type="checkbox" name="hide_completed" class="checkbox dashboard-check" onchange="document.getElementById('hide-completed-form').submit();" {% if hideCompleted %}checked{% endif %}>
+        <form id="hide-completed-form" action="/hide_completed" method="POST" style="display:none;">
+            <input type="hidden" name="hide_completed" value="true">
+        </form>
+        <span class="checkmark"></span>
+        <label for="hide-completed">Hide Completed Tasks</label>
+    </div>
+    
+    <!-- Important tasks section -->
     <div class="columns is-multiline">
         {% if tasks | selectattr('important', 'equalto', True) | selectattr('completed', 'equalto', False) | list | length > 0 %}
         <div class="column is-full">
             <p class="title is-4 has-text-centered has-text-danger">Important Tasks</p>
         </div>
         {% endif %}
-            {% for task in tasks %}
-                {% if task.important and not task.completed %}
-                    <div class="column is-half is-offset-3">
-                        <div class="box has-background-danger-30">
-                            <div class="media-content">
-                                <div class="content">
-                                    <p class="important-text">
-                                        <strong class="important-text">Task:</strong> {{ task.name }}<br>
-                                        <strong class="important-text">Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
-                                    </p>
-                                </div>
-                                <form action="/complete" method="POST">
-                                    <input type="hidden" name="task_id" value="{{ task.task_id }}">
-                                    <input type="submit" value="Complete" class="button is-danger">
-                                </form>
+        
+        <!-- Loop through tasks and display important tasks -->
+        {% for task in tasks %}
+            {% if task.important and not task.completed %}
+                <div class="column is-half is-offset-3">
+                    <div class="box has-background-danger-30 important-box" onclick="window.location.href='/task/{{ task.task_id }}'">
+                        <div class="media-content">
+                            <div class="content">
+                                <p class="important-text">
+                                    <strong class="important-text">Task:</strong> {{ task.name }}<br>
+                                    <strong class="important-text">Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
+                                </p>
                             </div>
+                            <form action="/complete" method="POST">
+                                <input type="hidden" name="task_id" value="{{ task.task_id }}">
+                                <input type="submit" value="Complete" class="button is-danger">
+                            </form>
                         </div>
                     </div>
-                {% endif %}
-            {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
+    
+    <!-- Groups and their tasks section -->
     <div class="columns is-multiline">
         {% for group in groups %}
+            <!-- Group circle -->
             <div class="circle-holder column is-full is-centered">
                 <div class="collision-checker">
-                        <div class="group-circle" onclick="window.location.href='/group/{{ group.group_id }}'">
-                            <div class="hero-body">
-                                <p class="group-circle-title title is-4">{{ group.group_name }}</p>
-                            </div>
+                    <div class="group-circle" onclick="window.location.href='/group/{{ group.group_id }}'">
+                        <div class="hero-body">
+                            <p class="group-circle-title title is-4">{{ group.group_name }}</p>
                         </div>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Check if group has tasks -->
             {% set has_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list | length > 0 %}
             {% set group_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list %}
             {% if not has_tasks %}
@@ -54,6 +74,8 @@
                     </div>
                 </div>
             {% endif %}
+            
+            <!-- Loop through group tasks and display them -->
             {% for task in group_tasks %}
                 {% if loop.index < 3 %}
                     <!-- Centre tasks based on how many are visible -->
@@ -63,19 +85,19 @@
                 {% endif %}
                 {% if loop.index == 3 %}
                     {% set remaining_tasks = tasks | selectattr('group_id', 'equalto', group.group_id) | list | length - 2 %}
-                        {% if remaining_tasks > 0 %}
-                            <div class="column is-one-third">
-                                <div class="box task-circle" onclick="window.location.href='/group/{{ group.group_id }}'">
-                                    <article class="media">
-                                        <div class="media-content">
-                                            <div class="content">
-                                                <p class="has-text-centered">+{{ remaining_tasks }} more tasks</p>
-                                            </div>
+                    {% if remaining_tasks > 0 %}
+                        <div class="column is-one-third">
+                            <div class="box task-circle" onclick="window.location.href='/group/{{ group.group_id }}'">
+                                <article class="media">
+                                    <div class="media-content">
+                                        <div class="content">
+                                            <p class="has-text-centered">+{{ remaining_tasks }} more tasks</p>
                                         </div>
-                                    </article>
-                                </div>
+                                    </div>
+                                </article>
                             </div>
-                        {% endif %}
+                        </div>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         {% endfor %}

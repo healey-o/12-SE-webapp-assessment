@@ -8,28 +8,40 @@
     <div class="container">
         <div class="columns is-centered">
             <div class="column is-half">
-                <div class="box">
+                <div class="box task-detailed">
                     {% if task.details %}
                         <p>{{ task.details }}</p>
                     {% else %}
-                        <p>No details available for this task.</p>
+                    <p>No details available for this task.</p>
                     {% endif %}
                     {% if not task.completed %}
                         <strong>Due:</strong> {{ task.due_date.strftime('%A, %d/%m/%Y') }}<br>
                         {% if task.important %}
                             <strong class="has-text-danger circle-header">Important</strong><br>
                         {% endif %}
+                        <hr class="button-spacer">
                         <form action="/complete" method="POST">
                             <input type="hidden" name="task_id" value="{{ task.task_id }}">
-                            <input type="submit" value="Complete" class="button is-primary">
+                            <input type="submit" value="Complete" class="task-complete-button">
+                            <a href="/edittask/{{ task.task_id }}" class="button task-edit-button">Edit</a>
+                            <a href="/deletetask/{{ task.task_id }}" class="button task-delete-button" onclick="if (!confirm('Are you sure you want to delete this task?')) {event.preventDefault();}">Delete</a>
                         </form>
                     {% else %}
                         <strong class="has-text-success">Task Complete</strong>
+                        <hr class="button-spacer">
+                        <form action="/decomplete" method="POST">
+                            <input type="hidden" name="task_id" value="{{ task.task_id }}">
+                            <input type="submit" value="Remove Complete" class="task-complete-button">
+                            <a href="/edittask/{{ task.task_id }}" class="button task-edit-button">Edit</a>
+                            <a href="/deletetask/{{ task.task_id }}" class="button task-delete-button" onclick="if (!confirm('Are you sure you want to delete this task?')) {event.preventDefault();}">Delete</a>
+                        </form>
                     {% endif %}
-                    <a href="/edittask/{{ task.task_id }}" class="button is-info">Edit</a>
-                    <a href="/deletetask/{{ task.task_id }}" class="button is-danger" onclick="if (!confirm('Are you sure you want to delete this task?')) {event.preventDefault();}">Delete</a>
                 </div>
             </div>
         </div>
+        <div class="column is-full has-text-centered">
+            <a href="/dashboard" class="button is-link">Return to Dashboard</a>
+        </div>  
     </div>
+    
 {% endblock %}

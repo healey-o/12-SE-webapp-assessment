@@ -11,29 +11,35 @@
                 <p>No tasks for today! Add some tasks <a href="/addtask">here.</a></p>
 
             {% else %}
-            
-            <div class="columns is-multiline">
-                <div class="column is-half">
-                    <h3>Important Tasks</h3>
-                    <ul>
-                        {% for task in tasks %}
-                            {% if task.important %}
-                                {% include 'task_box.html' %}
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
+                {% set important_tasks = tasks|selectattr('important')|list %}
+                {% set other_tasks = tasks|rejectattr('important')|list %}
+
+                <div class="columns is-multiline">
+                    <div class="column is-half">
+                        <h3 class="has-text-centered">Important Tasks</h3>
+                        {% if important_tasks|length == 0 %}
+                            <p class="has-text-centered">No important tasks for today!</p>
+                        {% else %}
+                            {% for task in tasks %}
+                                {% if task.important %}
+                                    {% include 'task_box.html' %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="column is-half">
+                        <h3 class="has-text-centered">Other Tasks</h3>
+                        {% if other_tasks|length == 0 %}
+                            <p class="has-text-centered">No other tasks for today!</p>
+                        {% else %}
+                            {% for task in tasks %}
+                                {% if not task.important %}
+                                    {% include 'task_box.html' %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="column is-half">
-                    <h3>Other Tasks</h3>
-                    <ul>
-                        {% for task in tasks %}
-                            {% if not task.important %}
-                                {% include 'task_box.html' %}
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
             {% endif %}
         </div>
     </div>

@@ -295,3 +295,100 @@ body {
     bottom: 0px;
     width: 100%;
 }
+
+.task-detailed {
+    position: relative;
+}
+
+.task-detailed .task-complete-button{
+    bottom: 20px;
+    left: 20px;
+    top: auto;
+    right: auto;
+    z-index: 1;
+}
+
+.task-detailed .task-edit-button{
+    position: absolute;
+    bottom: 20px;
+    left: 180px;
+    width: 100px;
+    height: 40px;
+    background-color: transparent;
+    border: var(--bulma-info) solid 2px;
+    color: var(--accent-color);
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.task-detailed .task-delete-button{
+    position: absolute;
+    bottom: 20px;
+    left: 290px;
+    width: 100px;
+    height: 40px;
+    background-color: transparent;
+    border: var(--bulma-danger) solid 2px;
+    color: var(--bulma-danger);
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.button-spacer {
+    margin-bottom: 50px;
+}
+
+.task-detailed::before {
+    content: '';
+    position: absolute;
+    opacity: 0;  
+    height: 100%;
+    width: 100%;
+    bottom: 0px;
+    left: 0px;
+    align-content: center;
+    padding: 10px;
+    transition: 0.5s;
+    color: #0f141f;
+    background-color: var(--bulma-primary);
+}
+
+.task-detailed:hover::before {
+    opacity: 1;
+    bottom: 20px;
+    left: 20px;
+    width: 150px;
+    height: 40px;
+    border-radius: 5px;
+}
+
+.task-detailed:hover{
+    background-color: var(--accent-color-invert);
+}
+
+.task-edit-button:hover {
+    background-color: var(--bulma-info);
+    color: #0f141f;
+}
+
+.task-delete-button:hover {
+    background-color: var(--bulma-danger);
+    color: #0f141f;
+}
+
+.dashboard-controls {
+    justify-self: center;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.dashboard-controls > label {
+    cursor: pointer;
+}
+
+.dashboard-controls::after {
+    opacity: 0;
+    z-index: -1;
+}
