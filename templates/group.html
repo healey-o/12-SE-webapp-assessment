@@ -24,7 +24,9 @@
                     {% endfor %}
                     {% if tasks|length == 0 %}
                         <div class="column is-full has-text-centered">
-                            <p>No tasks available for this group.</p>
+                            <p>No tasks available for this group. You can:</p>
+                            <a href="/addtask" class="button is-primary">Add a task</a>
+                            <a href="/deletegroup/{{ group.group_id }}" class="button is-danger" onclick="if (!confirm('Are you sure you want to delete this group?')) {event.preventDefault();}">Delete this group</a>
                         </div>
                     {% endif %}
                 </div>

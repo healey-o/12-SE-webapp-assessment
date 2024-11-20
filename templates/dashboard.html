@@ -31,7 +31,7 @@
         {% for task in tasks %}
             {% if task.important and not task.completed %}
                 <div class="column is-half is-offset-3">
-                    <div class="box has-background-danger-30 important-box" onclick="window.location.href='/task/{{ task.task_id }}'">
+                    <div class="box important-box" onclick="window.location.href='/task/{{ task.task_id }}'">
                         <div class="media-content">
                             <div class="content">
                                 <p class="important-text">

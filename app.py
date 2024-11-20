@@ -346,9 +346,24 @@ def logout():
     flaskSession.clear()
     return redirect(url_for('home'))
 
+# Toggles the hide completed tasks setting for the dashboard
 @app.route('/hide_completed', methods=['POST'])
 def hideCompleted():
     flaskSession['hideCompleted'] = not flaskSession.get('hideCompleted')
+    return redirect(url_for('dashboard'))
+
+#Delete group
+@app.route('/deletegroup/<group_id>')
+def deleteGroup(group_id):
+    if flaskSession.get('userId') is None:
+        return redirect(url_for('login'))
+
+    group = sessionDb.query(Group).filter(Group.group_id == group_id).first()
+    if group:
+        sessionDb.delete(group)
+        sessionDb.commit()
+
+    flash('Group deleted.')
     return redirect(url_for('dashboard'))
 
 app.run(debug=True, reloader_type='stat', port=5000)

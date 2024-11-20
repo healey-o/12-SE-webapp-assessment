@@ -7,7 +7,11 @@
             <hr>
 
             {% if showDetails %}
-                {{ task.details }}
+                {% if task.details %}
+                    {{ task.details }}
+                {% else %}
+                    No details available.
+                {% endif %}
                 <hr>
             {% endif %}
 
