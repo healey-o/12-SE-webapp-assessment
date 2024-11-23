@@ -164,7 +164,7 @@ def addtask():
 
 # Submitting a new task
 @app.route('/addtask', methods=['POST'])
-def submitTask():
+def submitTaskAdd():
     if flaskSession.get('userId') is None:
         return redirect(url_for('login'))
 
@@ -194,7 +194,8 @@ def submitTask():
     dueDate = request.form['due-date']
     if dueDate == '':
         errors.append('empty_field')
-    dueDate = datetime.datetime.strptime(dueDate, '%Y-%m-%d').date()
+    else:
+        dueDate = datetime.datetime.strptime(dueDate, '%Y-%m-%d').date()
 
     if request.form.get('important') == 'on':
         important = True
@@ -204,6 +205,8 @@ def submitTask():
     # Check for errors in the form data
     if task == '':
         errors.append('empty_field')
+    elif len(task) > 50:
+        errors.append('task_name_length')
     
     if len(errors) > 0:
         groups = sessionDb.query(Group).filter(Group.user_id == flaskSession.get('userId')).all()
@@ -296,12 +299,17 @@ def submitTaskEdit(task_id):
     userId = flaskSession.get('userId')
 
     # Check for errors in the form data
+    print(name)
+    print(len(name))
     if name == '':
         errors.append('empty_field')
+    elif len(name) > 50:
+        errors.append('task_name_length')
     
     if len(errors) > 0:
         groups = sessionDb.query(Group).filter(Group.user_id == flaskSession.get('userId')).all()
-        return render_template('edit_task.html', errors=errors,groups=groups)
+        task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
+        return render_template('edit_task.html', errors=errors,groups=groups, task=task)
     else:
         group_id = sessionDb.query(Group).filter(Group.group_name == group.group_name and Group.user_id == userId).first().group_id
 

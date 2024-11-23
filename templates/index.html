@@ -1,9 +1,107 @@
 {% extends "base.html" %}
 
-{% block title %}Study Planner: Home{% endblock %}
+{% block title %}StudySpheres: Welcome{% endblock %}
 
-{% block heading %}Home{% endblock %}
+{% block heading %}<span id="home-title">Study<b>Spheres</b></span>{% endblock %}
 
 {% block content %}
-    <p>Welcome to the home page!</p>
+
+    <div class="columns is-full">
+        <div class="column is-3 is-offset-1">
+            <div class="box">
+                <p class="title is-4">Welcome to StudySpheres</p>
+                <hr>
+                <p><i>StudySpheres</i> is a simple, effective way of managing your tasks.</p>
+                <p>Our platform helps you stay organized and on top of your studies. Whether you're managing assignments, tracking deadlines, or planning your study schedule, StudySpheres has got you covered.</p>
+                <p>Join us and take control of your academic journey with ease and efficiency.</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <p class = "subtitle is-4 has-text-centered"><i>Your Ultimate Study Companion</i></p>
+        </div>
+        <div class="column is-3">
+            <div class="box">
+                <p class="title is-4">Features</p>
+                <hr>
+                <ul>
+                    <li>Create, edit, and delete tasks with ease</li>
+                    <li>Mark tasks as complete</li>
+                    <li>Track due dates for your tasks</li>
+                    <li>Organise tasks into custom groups</li>
+                </ul>
+            </div>
+    </div>
+
+    <!-- This is a fancy svg, completely uneccessary but I couldn't help myself-->
+    <svg width="100" height="40" viewBox="-50 -40 100 40" id="welcome-svg">
+
+        <g>
+            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="12s" repeatCount="indefinite"/>            
+            <line x1="0" y1="0" x2="0" y2="30" stroke="var(--bulma-primary)" stroke-width="0.5"/>
+            <g transform="translate(0, 30)">
+                <circle r="3" fill="var(--bulma-link)" stroke="var(--bulma-link)"/>
+                <text text-anchor="middle" fill="#e0e0e0" font-size="1px" transform="rotate(180)">Personal</text>
+            </g>
+            
+        </g>
+    
+        <g>
+            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="12s" repeatCount="indefinite"/>            
+            <line x1="0" y1="0" x2="25" y2="0" stroke="var(--bulma-primary)" stroke-width="0.5"/>
+            <g transform="translate(25, 0)">
+                <circle r="3" fill="var(--bulma-link)" stroke="var(--bulma-link)"/>
+                <text text-anchor="middle" fill="#e0e0e0" font-size="1px" transform="rotate(90)">Important</text>
+            </g>
+            
+        </g>
+    
+        <g>
+            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="12s" repeatCount="indefinite"/>            
+            <line x1="0" y1="0" x2="0" y2="-20" stroke="var(--bulma-primary)" stroke-width="0.5"/>
+            <g transform="translate(0, -20)">
+                <circle r="3" fill="var(--bulma-link)" stroke="var(--bulma-link)"/>
+                <text text-anchor="middle" fill="#e0e0e0" font-size="1px">English</text>
+            </g>
+            
+        </g>
+
+        <g>
+            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="30s" repeatCount="indefinite"/>            
+            <line x1="0" y1="0" x2="-20" y2="-20" stroke="var(--bulma-primary)" stroke-width="0.5"/>
+            <g transform="translate(-20, -20)">
+                <circle r="3" fill="var(--bulma-link)" stroke="var(--bulma-link)"/>
+                <text text-anchor="middle" fill="#e0e0e0" font-size="1px" transform="rotate(-45)">School</text>
+            </g>
+            
+        </g>
+
+        <g>
+            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="20s" repeatCount="indefinite"/>            
+            <line x1="0" y1="0" x2="20" y2="-20" stroke="var(--bulma-primary)" stroke-width="0.5"/>
+            <g transform="translate(20, -20)">
+                <circle r="3" fill="var(--bulma-link)" stroke="var(--bulma-link)"/>
+                <text text-anchor="middle" fill="#e0e0e0" font-size="1px" transform="rotate(45)">Maths</text>
+            </g>
+        </g>
+
+        <g>
+            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="20s" repeatCount="indefinite"/>            
+            <line x1="0" y1="0" x2="-25" y2="0" stroke="var(--bulma-primary)" stroke-width="0.5"/>
+            <g transform="translate(-25, 0)">
+                <circle r="3" fill="var(--bulma-link)" stroke="var(--bulma-link)"/>
+                <text text-anchor="middle" fill="#e0e0e0" font-size="1px" transform="rotate(-90)">Science</text>
+            </g>
+        </g>
+
+        <g>
+            <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="360" to="0" dur="30s" repeatCount="indefinite"/>            
+            <line x1="0" y1="0" x2="0" y2="25" stroke="var(--bulma-primary)" stroke-width="0.5"/>
+            <g transform="translate(0, 25)">
+                <circle r="3" fill="var(--bulma-link)" stroke="var(--bulma-link)"/>
+                <text text-anchor="middle" fill="#e0e0e0" font-size="1px" transform="rotate(180)">History</text>
+            </g>
+        </g>
+    
+        <circle cx="0" cy="0" r="12" fill="var(--bulma-body-background-color)" stroke="var(--bulma-primary)"/>
+    </svg>
 {% endblock %}

@@ -42,6 +42,29 @@ body {
     background-color: var(--bulma-body-background-color);
 }
 
+#home-title {
+    color: var(--accent-color);
+    font-style: italic;
+    font-weight: normal;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#home-title > b {
+    color: var(--bulma-primary);
+}
+
+.site-name {
+    color: var(--accent-color);
+    font-style: italic;
+    font-weight: normal;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    align-self: center;
+}
+
+.site-name > b {
+    color: var(--bulma-primary);
+}
+
 #welcome-svg {
     position: fixed;
     height: 100vh;
@@ -49,6 +72,7 @@ body {
     left: 0;
     top: 0;
     overflow: hidden;
+    z-index: -1;
 }
 
 #logo-svg {

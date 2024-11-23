@@ -20,6 +20,10 @@
                                 <input class="input" type="text" name="name" value="{{ task.name }}">
                             </div>
                         </div>
+                        {% if "task_name_length" in errors %}
+                            <p class="help is-danger">Task name must be between 1 and 50 characters long.</p>
+                            <br>
+                        {% endif %}
                         <div class="field">
                             <label class="label">Details</label>
                             <div class="control">

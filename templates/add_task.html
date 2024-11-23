@@ -15,6 +15,10 @@
                 <label for="task" class="label">Task</label>
                 <input id="task" class="input" type="text" name="task" placeholder="e.g. Study for Math exam" />
             </div>
+            {% if "task_name_length" in errors %}
+                <p class="help is-danger">Task name must be between 1 and 50 characters long.</p>
+                <br>
+            {% endif %}
 
             <br>
 
