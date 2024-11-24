@@ -1,0 +1,70 @@
+{% extends 'base_loggedin.html' %}
+
+{% block title %}StudySpheres: User Details{% endblock %}
+
+{% block heading %}Edit User{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-half">
+            <div class="box">
+                <form method="POST" action="/user/new-username">
+                    <p class="title is-5">Change Username</p>
+                    <div>
+                        <label for="username">Username:</label>
+                        <input class="input" type="text" id="username" name="username" value="{{ user.username }}">
+                    </div>
+                    {% if "username_taken" in errors %}
+                        <p class="help is-danger">Username is already taken.</p>
+                    {% endif %}
+                    {% if "empty_field_username" in errors %}
+                        <p class="help is-danger">Please fill in all fields.</p>
+                    {% endif %}
+                    <hr>
+                    <input type="submit" value="Submit" class="button is-primary">
+                </form>
+                
+                <form method="POST" action="/user/new-password">
+                    <hr>
+                    <p class="title is-5">Change Password</p>
+                    <div>
+                        <label for="email">Current Password:</label>
+                        <input class="input" type="password" id="password" name="password">
+                    </div>
+                    {% if "incorrect_password" in errors %}
+                        <p class="help is-danger">Incorrect password.</p>
+                    {% endif %}
+                    <br>
+                    <div>
+                        <label for="new-password">New Password:</label>
+                        <input class="input" type="password" id="new-password" name="new-password">
+                    </div>
+                    <div>
+                        <label for="confirm_password">Confirm New Password:</label>
+                        <input class="input" type="password" id="confirm-password" name="confirm-password">
+                    </div>
+                    
+                    
+
+                    {% if "password_length" in errors %}
+                        <p class="help is-danger">Password must be at least 8 characters long.</p>
+                    {% endif %}
+
+                    {% if "match_password" in errors %}
+                        <p class="help is-danger">Passwords do not match.</p>
+                    {% endif %}
+                    
+                    {% if "empty_field_password" in errors %}
+                        <p class="help is-danger">Please fill in all fields.</p>
+                    {% endif %}
+
+                    <hr>
+
+                    <input type="submit" value="Submit" class="button is-primary">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

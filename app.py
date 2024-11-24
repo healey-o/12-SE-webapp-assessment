@@ -380,4 +380,79 @@ def deleteGroup(group_id):
     flash('Group deleted.')
     return redirect(url_for('dashboard'))
 
+#Edit user details
+@app.route('/user', methods=['GET'])
+def editUser():
+    if flaskSession.get('userId') is None:
+        return redirect(url_for('login'))
+
+    user = sessionDb.query(User).filter(User.id == flaskSession.get('userId')).first()
+    return render_template('edit_user.html', user=user)
+
+# Change username
+@app.route('/user/new-username', methods=['POST'])
+def submitUsernameEdit():
+    if flaskSession.get('userId') is None:
+        return redirect(url_for('login'))
+
+    errors = []
+
+    # Get the form data
+    username = request.form['username']
+    user = sessionDb.query(User).filter(User.id == flaskSession.get('userId')).first()
+
+    # Check for errors in the form data
+    existing_user = sessionDb.query(User).filter(User.username == username).first()
+    if existing_user and existing_user.id != user.id:
+        errors.append('username_taken')
+
+    if username == '':
+        errors.append('empty_field_username')
+
+    if len(errors) > 0:
+        return render_template('edit_user.html', errors=errors, user=user)
+    else:
+        user.username = username
+        sessionDb.commit()
+        flaskSession['username'] = username
+
+        flash('Username updated successfully!')
+        return redirect(url_for('dashboard'))
+
+# Change password
+@app.route('/user/new-password', methods=['POST'])
+def submitPasswordEdit():
+    if flaskSession.get('userId') is None:
+        return redirect(url_for('login'))
+
+    errors = []
+
+    # Get the form data
+    password = request.form['password']
+    new_password = request.form['new-password']
+    confirm_password = request.form['confirm-password']
+    user = sessionDb.query(User).filter(User.id == flaskSession.get('userId')).first()
+
+    # Check for errors in the form data
+    if user.check_password(password) == False:
+        errors.append('incorrect_password')
+
+    if new_password == '' or confirm_password == '':
+        errors.append('empty_field_password')
+    
+    if len(new_password) < 8:
+        errors.append('password_length')
+    
+    if new_password != confirm_password:
+        errors.append('match_password')
+
+    if len(errors) > 0:
+        return render_template('edit_user.html', errors=errors, user=user)
+    else:
+        user.password = generate_password_hash(new_password)
+        sessionDb.commit()
+
+        flash('Password updated successfully!')
+        return redirect(url_for('dashboard'))
+
 app.run(debug=True, reloader_type='stat', port=5000)
