@@ -80,7 +80,7 @@ def submitSignup():
 
 @app.route('/login', methods=['GET'])
 def login():
-    return render_template('login.html',failed_attempt=False)
+    return render_template('login.html',failed_attempt=False,usernameFailed='',passwordFailed='')
 
 @app.route('/login', methods=['POST'])
 def submitLogin():
@@ -90,7 +90,8 @@ def submitLogin():
 
     # Check if the form data is empty
     if username == '' or password == '':
-        return render_template("login.html",failed_attempt=True)
+        #usernameFailed and passwordFailed are used to keep the form data in the input fields between failed login attempts
+        return render_template("login.html",failed_attempt=True,usernameFailed=username,passwordFailed=password)
 
     # Check if the user exists
     user = sessionDb.query(User).filter(User.username == username).first()
@@ -101,7 +102,7 @@ def submitLogin():
         flaskSession['hideCompleted'] = False
         return redirect(url_for('dashboard'))
     else:
-        return render_template("login.html",failed_attempt=True)
+        return render_template("login.html",failed_attempt=True,usernameFailed=username,passwordFailed=password)
         
     
 
@@ -122,7 +123,9 @@ def dashboard():
 
         groups = sessionDb.query(Group).filter(Group.user_id == userId).all()
 
-        return render_template('dashboard.html', tasks=tasks, groups=groups, showDetails=False, hideCompleted=hideCompleted)
+        date = datetime.datetime.now().date()
+
+        return render_template('dashboard.html', tasks=tasks, groups=groups, showDetails=False, hideCompleted=hideCompleted, date=date)
 
 # Registering a task as complete
 @app.route('/complete', methods=['POST'])

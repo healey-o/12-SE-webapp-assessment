@@ -1,5 +1,5 @@
 <!-- This is used as a template for showing a task on the dashboard, group pages and the My Day page -->
-<div class="box task-box" onclick="window.location.href='/task/{{ task.task_id }}'">
+<div class="box task-box {% if date > task.due_date.date() and not task.completed %}overdue-task{% endif %}" onclick="window.location.href='/task/{{ task.task_id }}'">
     <div class="content">
         <p>
             <strong class="{{ 'has-text-success' if task.completed else '' }}">{{ task.name }}</strong>
@@ -16,7 +16,14 @@
             {% endif %}
 
             {% if not task.completed %}
-                <strong class="">Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
+                <strong>Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
+                {% if date < task.due_date.date() %}
+                    <strong>Time Left:</strong> {{ (task.due_date - date).days }} days<br>
+                {% elif date == task.due_date.date() %}
+                    <strong class="has-text-warning">Due Today</strong><br>
+                {% else %}
+                    <strong class="has-text-danger">Overdue</strong><br>
+                {% endif %}
                 {% if task.important %}
                     <strong class="has-text-danger circle-header">Important</strong><br>
                 {% endif %}

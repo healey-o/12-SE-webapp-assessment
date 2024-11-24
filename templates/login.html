@@ -9,14 +9,14 @@
         <form action="/login" method="POST" class="box column is-half" id="login-form">
             <div class="field">
                 <label for="username-login" class="label">Username</label>
-                <input id="username-login" class="input" type="text" name="username-login" placeholder="e.g. JohnSmith123" />
+                <input id="username-login" class="input" type="text" name="username-login" placeholder="e.g. JohnSmith123" value="{{ usernameFailed }}" />
             </div>
 
             <br>
             
             <div class="field">
                 <label for="password-login" class="label">Password</label>
-                <input id="password-login" class="input" type="password" name="password-login" placeholder="********" />
+                <input id="password-login" class="input" type="password" name="password-login" placeholder="********" value="{{ passwordFailed }}" />
             </div>
             
             <br>

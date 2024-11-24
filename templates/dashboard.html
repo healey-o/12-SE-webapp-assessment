@@ -37,6 +37,13 @@
                                 <p class="important-text">
                                     <strong class="important-text">Task:</strong> {{ task.name }}<br>
                                     <strong class="important-text">Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
+                                    {% if date < task.due_date.date() %}
+                                        <strong>Time Left:</strong> {{ (task.due_date.date() - date).days }} days<br>
+                                    {% elif date == task.due_date.date() %}
+                                        <strong class="has-text-warning">Due Today</strong><br>
+                                    {% else %}
+                                        <strong class="has-text-danger">Overdue</strong><br>
+                                    {% endif %}
                                 </p>
                             </div>
                             <form action="/complete" method="POST">
