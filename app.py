@@ -145,6 +145,9 @@ def completeTask():
             task.due_date = task.due_date + datetime.timedelta(weeks=1)
         elif task.repeat == 'monthly':
             task.due_date = task.due_date + datetime.timedelta(days=30)
+        elif task.repeat == 'yearly':
+            #Accounts for leap years
+            task.due_date = task.due_date + datetime.timedelta(days=366 if (task.due_date.year % 4 == 0 and (task.due_date.year % 100 != 0 or task.due_date.year % 400 == 0)) else 365)
         
         sessionDb.commit()
 
