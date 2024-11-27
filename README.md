@@ -15,6 +15,8 @@ Join us and take control of your academic journey with ease and efficiency.
 - Track due dates for your tasks
 - Organise tasks into custom groups
 
+![StudySppheres Dashboard](static/images/demo_dashboard.png)
+
 ### Installation
 1. Ensure you have Python version 3.12.1 or later (Python can be downloaded from <a href="https://www.python.org/downloads/">here</a>.)
 2. Clone the repository
