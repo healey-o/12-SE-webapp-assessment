@@ -203,7 +203,7 @@ def submitTaskAdd():
             new_group = Group(user_id=userId, group_name=new_group_name, group_id=str(uuid.uuid4()))
             sessionDb.add(new_group)
             sessionDb.commit()
-            group = new_group
+            group = sessionDb.query(Group).filter(Group.group_name == new_group_name, Group.user_id == userId).first()
         else:
             errors.append('group_name_length')
 
