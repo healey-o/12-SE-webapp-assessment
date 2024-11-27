@@ -40,7 +40,7 @@ class Task(Base):
 class Group(Base):
     __tablename__ = 'groups'
     group_id = Column(String, primary_key=True, nullable=False)
-    group_name = Column(String, nullable=False, unique=True)
+    group_name = Column(String, nullable=False)
 
     # Foreign keys
     user_id = Column(String, ForeignKey('userdetails.id'), nullable=False)

@@ -195,7 +195,7 @@ def submitTaskAdd():
 
     if request.form['group-select'] != 'new':
         groupId = request.form['group-select']
-        group = sessionDb.query(Group).filter(Group.group_id == groupId).first()
+        group = sessionDb.query(Group).filter(Group.group_id == groupId, Group.user_id == userId).first()
         
     else:
         new_group_name = request.form['new-group-input']
@@ -229,12 +229,10 @@ def submitTaskAdd():
         errors.append('task_name_length')
     
     if len(errors) > 0:
-        groups = sessionDb.query(Group).filter(Group.user_id == flaskSession.get('userId')).all()
+        groups = sessionDb.query(Group).filter(Group.user_id == userId).all()
         return render_template('add_task.html', errors=errors,groups=groups)
     else:
-        group_id = sessionDb.query(Group).filter(Group.group_name == group.group_name and Group.user_id == userId).first().group_id
-
-        task = Task(user_id=userId, task_id=str(uuid.uuid4()), name=task, details=details, group_id=group_id, important=important, due_date=dueDate, completed=False, repeat=repeat)
+        task = Task(user_id=userId, task_id=str(uuid.uuid4()), name=task, details=details, group_id=group.group_id, important=important, due_date=dueDate, completed=False, repeat=repeat)
         sessionDb.add(task)
         sessionDb.commit()
 
@@ -247,7 +245,9 @@ def viewGroup(group_id):
     if flaskSession.get('userId') is None:
         return redirect(url_for('login'))
 
-    group = sessionDb.query(Group).filter(Group.group_id == group_id).first()
+    userId = flaskSession.get('userId')
+
+    group = sessionDb.query(Group).filter(Group.group_id == group_id, Group.user_id == userId).first()
     tasks = sessionDb.query(Task).filter(Task.group_id == group_id).order_by(Task.due_date).all()
 
     date = datetime.datetime.now().date()
@@ -260,8 +260,10 @@ def viewTask(task_id):
     if flaskSession.get('userId') is None:
         return redirect(url_for('login'))
 
+    userId = flaskSession.get('userId')
+
     task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
-    group = sessionDb.query(Group).filter(Group.group_id == task.group_id).first()
+    group = sessionDb.query(Group).filter(Group.group_id == task.group_id, Group.user_id == userId).first()
 
     return render_template('task.html', task=task, group=group)
 
@@ -300,7 +302,7 @@ def submitTaskEdit(task_id):
 
     if request.form['group-select'] != 'new':
         groupId = request.form['group-select']
-        group = sessionDb.query(Group).filter(Group.group_id == groupId).first()
+        group = sessionDb.query(Group).filter(Group.group_id == groupId, Group.user_id == userId).first()
         
     else:
         new_group_name = request.form['new-group-input']
@@ -395,7 +397,9 @@ def deleteGroup(group_id):
     if flaskSession.get('userId') is None:
         return redirect(url_for('login'))
 
-    group = sessionDb.query(Group).filter(Group.group_id == group_id).first()
+    userId = flaskSession.get('userId')
+
+    group = sessionDb.query(Group).filter(Group.group_id == group_id, Group.user_id == userId).first()
     if group:
         sessionDb.delete(group)
         sessionDb.commit()
