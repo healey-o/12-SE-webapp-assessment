@@ -4,6 +4,7 @@
 
 {% block heading %}{{ task.name }}{% endblock %}
 
+<!-- Displays tasks details as its own page, along with Complete, Edit, and Delete Buttons. -->
 {% block content %}
     <div class="container">
         <div class="columns is-centered">
@@ -18,6 +19,9 @@
                         <strong>Due:</strong> {{ task.due_date.strftime('%A, %d/%m/%Y') }}<br>
                         {% if task.important %}
                             <strong class="has-text-danger circle-header">Important</strong><br>
+                        {% endif %}
+                        {% if task.repeat != 'none' %}
+                            Repeats {{ task.repeat }}<br>
                         {% endif %}
                         <hr class="button-spacer">
                         <form action="/complete" method="POST">
