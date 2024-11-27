@@ -233,7 +233,9 @@ def viewGroup(group_id):
     group = sessionDb.query(Group).filter(Group.group_id == group_id).first()
     tasks = sessionDb.query(Task).filter(Task.group_id == group_id).order_by(Task.due_date).all()
 
-    return render_template('group.html', group=group, tasks=tasks, showDetails=True)
+    date = datetime.datetime.now().date()
+
+    return render_template('group.html', group=group, tasks=tasks, showDetails=True, date=date)
 
 # View task details
 @app.route('/task/<task_id>')
@@ -325,7 +327,7 @@ def submitTaskEdit(task_id):
         sessionDb.commit()
 
         flash('Task edited successfully!')
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('viewTask', task_id=task_id))
 
 #Delete task
 @app.route('/deletetask/<task_id>')
@@ -353,9 +355,10 @@ def myday():
     current_date = datetime.datetime.now().date()
     tasks = sessionDb.query(Task).filter(Task.user_id == userId).all()
     tasks = [task for task in tasks if task.due_date.date() == current_date]
+    
+    date = datetime.datetime.now().date()
 
-
-    return render_template('myday.html', tasks=tasks, showDetails=True)
+    return render_template('myday.html', tasks=tasks, showDetails=True, date=date)
 
 #Log out
 @app.route('/logout')

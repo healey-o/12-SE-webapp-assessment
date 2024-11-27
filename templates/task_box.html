@@ -18,7 +18,7 @@
             {% if not task.completed %}
                 <strong>Due Date:</strong> {{ task.due_date.strftime('%d/%m/%Y') }}<br>
                 {% if date < task.due_date.date() %}
-                    <strong>Time Left:</strong> {{ (task.due_date - date).days }} days<br>
+                    <strong>Time Left:</strong> {{ (task.due_date.date() - date).days }} days<br>
                 {% elif date == task.due_date.date() %}
                     <strong class="has-text-warning">Due Today</strong><br>
                 {% else %}
