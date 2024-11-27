@@ -136,7 +136,16 @@ def completeTask():
     task_id = request.form['task_id']
     task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
     if task:
-        task.completed = True
+        #Check if the task repeats, if it does, change the due date to the next repeat date
+        if task.repeat == 'none':
+            task.completed = True
+        elif task.repeat == 'daily':
+            task.due_date = task.due_date + datetime.timedelta(days=1)
+        elif task.repeat == 'weekly':
+            task.due_date = task.due_date + datetime.timedelta(weeks=1)
+        elif task.repeat == 'monthly':
+            task.due_date = task.due_date + datetime.timedelta(days=30)
+        
         sessionDb.commit()
 
     flash('Task Complete!')
@@ -158,7 +167,7 @@ def decompleteTask():
 
 # Load the add task page
 @app.route('/addtask', methods=['GET'])
-def addtask():
+def addTask():
     if flaskSession.get('userId') is None:
         return redirect(url_for('login'))
 
@@ -204,6 +213,8 @@ def submitTaskAdd():
         important = True
     else:
         important = False
+    
+    repeat = request.form['repeat']
 
     # Check for errors in the form data
     if task == '':
@@ -217,7 +228,7 @@ def submitTaskAdd():
     else:
         group_id = sessionDb.query(Group).filter(Group.group_name == group.group_name and Group.user_id == userId).first().group_id
 
-        task = Task(user_id=userId, task_id=str(uuid.uuid4()), name=task, details=details, group_id=group_id, important=important, due_date=dueDate, completed=False)
+        task = Task(user_id=userId, task_id=str(uuid.uuid4()), name=task, details=details, group_id=group_id, important=important, due_date=dueDate, completed=False, repeat=repeat)
         sessionDb.add(task)
         sessionDb.commit()
 

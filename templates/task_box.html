@@ -27,6 +27,9 @@
                 {% if task.important %}
                     <strong class="has-text-danger circle-header">Important</strong><br>
                 {% endif %}
+                {% if task.repeat != 'none' %}
+                    Repeats {{ task.repeat }}<br>
+                {% endif %}
             {% else %}
                 <strong class="has-text-success">Task Complete</strong>
             {% endif %}

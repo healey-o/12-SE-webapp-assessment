@@ -44,6 +44,9 @@
                                     {% else %}
                                         <strong class="has-text-danger">Overdue</strong><br>
                                     {% endif %}
+                                    {% if task.repeat != 'none' %}
+                                        Repeats {{ task.repeat }}<br>
+                                    {% endif %}
                                 </p>
                             </div>
                             <form action="/complete" method="POST">

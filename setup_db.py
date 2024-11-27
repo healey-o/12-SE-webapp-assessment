@@ -27,6 +27,7 @@ class Task(Base):
     important = Column(Boolean, nullable=False)
     due_date = Column(DateTime, nullable=False)
     completed = Column(Boolean, nullable=False)
+    repeat = Column(String, nullable=False)
 
     # Foreign keys
     user_id = Column(String, ForeignKey('userdetails.id'), nullable=False)

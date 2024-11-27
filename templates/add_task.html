@@ -59,9 +59,22 @@
 
             <br>
 
-            <div class="field">
-                <label for="due-date" class="label">Due Date</label>
-                <input id="due-date" class="input" type="date" name="due-date" />
+            <div class="columns">
+                <div class="field column is-2">
+                    <label for="due-date" class="label">Due Date</label>
+                    <input id="due-date" class="input" type="date" name="due-date" />
+                </div>
+                <div class="field column is-2">
+                    <label for="repeat" class="label">Repeat</label>
+                    <div class="select">
+                        <select id="repeat" name="repeat">
+                            <option value="none">None</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
 
