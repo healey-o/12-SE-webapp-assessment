@@ -1,3 +1,5 @@
+![StudySpheres Logo](static/images/logo_still.png)
+
 # StudySpheres
 ### Your Ultimate Study Companion
 Welcome to StudySpheres! <br>
