@@ -21,6 +21,9 @@
                     {% if "empty_field_username" in errors %}
                         <p class="help is-danger">Please fill in all fields.</p>
                     {% endif %}
+                    {% if "username_length" in errors %}
+                        <p class="help is-danger">Username cannot be more than 50 characters long.</p>
+                    {% endif %}
                     <hr>
                     <input type="submit" value="Submit" class="button is-primary">
                 </form>

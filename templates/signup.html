@@ -14,6 +14,9 @@
             {% if "username_taken" in errors %}
                 <p class="help is-danger">Username is already taken.</p>
             {% endif %}
+            {% if "username_length" in errors %}
+                <p class="help is-danger">Username cannot be more than 50 characters long.</p>
+            {% endif %}
 
             <br>
             

@@ -48,6 +48,9 @@ def submitSignup():
     
     if password != password_confirm:
         errors.append('match_password')
+    
+    if len(username) > 50:
+        errors.append('username_length')
 
 
     users = sessionDb.query(User).filter(User.username == username).all()
@@ -428,6 +431,9 @@ def submitUsernameEdit():
 
     if username == '':
         errors.append('empty_field_username')
+    
+    if len(username) > 50:
+        errors.append('username_length')
 
     if len(errors) > 0:
         return render_template('edit_user.html', errors=errors, user=user)
