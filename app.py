@@ -276,7 +276,7 @@ def editTask(task_id):
     task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
     groups = sessionDb.query(Group).filter(Group.user_id == flaskSession.get('userId')).all()
 
-    return render_template('edit_task.html', task=task, groups=groups)
+    return render_template('edit_task.html', task=task, groups=groups, current_group=task.group_id)
 
 # Submit edited task details
 @app.route('/edittask/<task_id>', methods=['POST'])
@@ -335,12 +335,10 @@ def submitTaskEdit(task_id):
         task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
         return render_template('edit_task.html', errors=errors,groups=groups, task=task)
     else:
-        group_id = sessionDb.query(Group).filter(Group.group_name == group.group_name and Group.user_id == userId).first().group_id
-
         task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
         task.name = name
         task.details = details
-        task.group_id = group_id
+        task.group_id = group.group_id
         task.important = important
         task.due_date = dueDate
         sessionDb.commit()
