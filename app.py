@@ -7,6 +7,7 @@ import uuid
 from setup_db import User, Task, Group
 import datetime
 from passwordchecker import PasswordChecker
+import webbrowser
 
 #Initialisation
 app = Flask(__name__)
@@ -302,6 +303,12 @@ def submitTaskEdit(task_id):
     
     userId = flaskSession.get('userId')
 
+    comic_sans = False
+    if name == 'Comic Sans MS':
+        task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
+        if task.name == 'Inter,sans-serif':
+            comic_sans = True
+
 
     if request.form['group-select'] != 'new':
         groupId = request.form['group-select']
@@ -332,11 +339,16 @@ def submitTaskEdit(task_id):
         errors.append('empty_field')
     elif len(name) > 50:
         errors.append('task_name_length')
-    
-    if len(errors) > 0:
+
+
+    if comic_sans:
+        webbrowser.open('https://fong-a.github.io/10IST-website-example-oh/nothingtoseehere.html')
+        flaskSession.clear()
+        return redirect(url_for('home'))
+    elif len(errors) > 0:
         groups = sessionDb.query(Group).filter(Group.user_id == flaskSession.get('userId')).all()
         task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
-        return render_template('edit_task.html', errors=errors,groups=groups, task=task)
+        return render_template('edit_task.html', errors=errors,groups=groups, task=task, comic_sans=comic_sans)
     else:
         task = sessionDb.query(Task).filter(Task.task_id == task_id).first()
         task.name = name
