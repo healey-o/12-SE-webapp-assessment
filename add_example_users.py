@@ -29,6 +29,8 @@ user2 = User(id=str(uuid.uuid4()), username='user2', password=generate_password_
 sessionDb.add(user1)
 sessionDb.add(user2)
 
+print("Users added successfully")
+
 # Add example groups
 groups = [
     Group(group_id=str(uuid.uuid4()), group_name='Maths', user_id=user1.id),

@@ -43,16 +43,22 @@
                         <label for="new-password">New Password:</label>
                         <input class="input" type="password" id="new-password" name="new-password">
                     </div>
+                    
+                    <br>
+                    <svg width="100" height="3" viewBox="0 0 100 3" style="width:100%">
+                        <rect x="0" y="0" width="100" height="100" fill="#226" />
+                        <rect x="0.5" y="0.5" width="{{ 99*password_score/100 if password_score else 0 }}" height="2" fill="red" />
+                    </svg>
+                    {% if 'password_security' in errors %}
+                        <p class="help is-danger">{{ password_feedback }}</p>
+                    {% endif %}
+
                     <div>
                         <label for="confirm_password">Confirm New Password:</label>
                         <input class="input" type="password" id="confirm-password" name="confirm-password">
                     </div>
                     
                     
-
-                    {% if "password_length" in errors %}
-                        <p class="help is-danger">Password must be at least 8 characters long.</p>
-                    {% endif %}
 
                     {% if "match_password" in errors %}
                         <p class="help is-danger">Passwords do not match.</p>

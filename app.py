@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash
 import uuid
 from setup_db import User, Task, Group
 import datetime
+from passwordchecker import PasswordChecker
 
 #Initialisation
 app = Flask(__name__)
@@ -49,8 +50,10 @@ def submitSignup():
     if password != password_confirm:
         errors.append('match_password')
     
-    if len(username) > 50:
-        errors.append('username_length')
+    feedback = scorePassword(password)
+    print(feedback)
+    if feedback[0] < 80:
+        errors.append('password_security')
 
 
     users = sessionDb.query(User).filter(User.username == username).all()
@@ -60,7 +63,7 @@ def submitSignup():
     
 
     if len(errors) > 0:
-        return render_template('signup.html', errors=errors)
+        return render_template('signup.html', errors=errors, password_feedback=feedback[1], password_score=feedback[0])
     else:
         unique_id = str(uuid.uuid4())#gives each user a unique uuid
 
@@ -468,19 +471,38 @@ def submitPasswordEdit():
     if new_password == '' or confirm_password == '':
         errors.append('empty_field_password')
     
-    if len(new_password) < 8:
-        errors.append('password_length')
+    feedback = scorePassword(password)
+    if feedback[0] < 80:
+        errors.append('password_security')
     
     if new_password != confirm_password:
         errors.append('match_password')
 
     if len(errors) > 0:
-        return render_template('edit_user.html', errors=errors, user=user)
+        return render_template('edit_user.html', errors=errors, user=user, password_feedback=feedback[1], password_score=feedback[0])
     else:
         user.password = generate_password_hash(new_password)
         sessionDb.commit()
 
         flash('Password updated successfully!')
         return redirect(url_for('dashboard'))
+
+def scorePassword(password):
+    passometer = PasswordChecker()
+    #Update password checker, then display results
+    passometer.update_password(password)
+
+    #Calculates all scores
+    passometer.score_length()
+    passometer.score_characters()
+    passometer.score_rarity()
+    passometer.score_pwned()
+    #Calculate final score
+    passometer.combine_scores(4,3,1)
+
+    passometer.rate_password()
+
+    return passometer.get_score(), passometer.generate_feedback('text')
+
 
 app.run(debug=True, reloader_type='stat', port=5000)

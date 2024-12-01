@@ -24,8 +24,12 @@
                 <label for="password-signup" class="label">Password</label>
                 <input id="password-signup" class="input" type="password" name="password-signup" placeholder="********" />
             </div>
-            {% if "password_length" in errors %}
-                <p class="help is-danger">Password must be at least 8 characters long.</p>
+            <svg width="100" height="3" viewBox="0 0 100 3" style="width:100%">
+                <rect x="0" y="0" width="100" height="100" fill="#226" />
+                <rect x="0.5" y="0.5" width="{{ 99*password_score/100 if password_score else 0 }}" height="2" fill="red" />
+            </svg>
+            {% if 'password_security' in errors %}
+                <p class="help is-danger">{{ password_feedback }}</p>
             {% endif %}
 
             <div class="field">
