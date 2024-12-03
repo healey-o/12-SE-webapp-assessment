@@ -194,6 +194,11 @@ body {
     color: #d8d9ff;
 }
 
+#addtask-navbar {
+    background-color: var(--accent-color-invert);
+    color: light-dark(var(--bulma-primary), var(--bulma-info));
+}
+
 .task-circle {
     position: relative;
     margin: .5em;
