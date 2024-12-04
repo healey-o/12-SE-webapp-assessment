@@ -19,7 +19,7 @@ Join us and take control of your academic journey with ease and efficiency.
 
 ### Installation
 1. Ensure you have Python version 3.12.1 or later (Python can be downloaded from <a href="https://www.python.org/downloads/">here</a>.)
-2. Clone the repository
+2. Clone the repository, or download the latest release from the <a href="https://github.com/healey-o/12-SE-webapp-assessment/releases">release page</a>.
 3. Open the folder in your terminal and type ```pip install requirements.txt``` to install the requirements.
 4. Run app.py
-5. Open the server address provided in the terminal in your preferred web browser.
+5. Open the server address provided in the terminal in your preferred web browser to run the webapp.
